@@ -1,12 +1,24 @@
 {
   "name": "bun-hono-rest-api",
   "scripts": {
-    "dev": "bun run --hot src/index.ts"
+    "start": "bun run src/index.ts",
+    "dev": "bun run --hot src/index.ts",
+    "lint": "eslint",
+    "lint:changed": "eslint --pass-on-no-patterns --no-warn-ignored $(git diff --name-only --diff-filter=d HEAD)",
+    "lint:staged": "eslint --pass-on-no-patterns --no-warn-ignored $(git diff --cached --name-only --diff-filter=d)",
+    "lint:fix": "bun run lint:changed -- --fix",
+    "lint:inspect": "bunx eslint --inspect-config",
+    "precommit": "bun run lint:staged",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "hono": "^4.6.20"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@antfu/eslint-config": "^4.1.1",
+    "@types/bun": "latest",
+    "eslint": "^9.19.0",
+    "eslint-plugin-format": "^1.0.1",
+    "simple-git-hooks": "^2.11.1"
   }
 }
