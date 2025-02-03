@@ -1,9 +1,8 @@
 import { Hono } from 'hono'
+import { useRoutes } from './routes'
 
 const app = new Hono()
 
-app.get('/', (c) => {
-  return c.text('Hello Hono!')
-})
+useRoutes(app)
 
 export default app
