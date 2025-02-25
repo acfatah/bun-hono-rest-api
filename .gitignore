@@ -46,3 +46,6 @@ package-lock.json
 
 # uploaded files directory
 upload
+
+# sqlite
+*.db
