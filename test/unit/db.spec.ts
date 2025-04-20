@@ -1,5 +1,5 @@
+import { db } from '@/lib/db'
 import { describe, expect, it } from 'bun:test'
-import { db } from '~/lib/db'
 
 describe('drizzle', () => {
   it('should connect successfully', async () => {
