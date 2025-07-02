@@ -20,6 +20,7 @@
     "@types/bun": "latest",
     "eslint": "^9.25.0",
     "eslint-plugin-format": "^1.0.1",
+    "jiti": "^2.4.2",
     "simple-git-hooks": "^2.12.1"
   }
 }
