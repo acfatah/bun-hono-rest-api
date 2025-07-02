@@ -1,4 +1,5 @@
 import { Hono } from 'hono'
+import process from 'node:process'
 
 export interface HealthCheck {
   status: string
