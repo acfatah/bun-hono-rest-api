@@ -2,17 +2,25 @@ import antfu from '@antfu/eslint-config'
 
 export default antfu(
   {
-    formatters: {
-      css: true,
-      html: true,
-      markdown: 'prettier',
-    },
+    formatters: true,
+  },
+
+  {
     rules: {
       'no-console': 'off',
-      'node/prefer-global/process': 'off',
+      'sort-imports': 'off',
+      'perfectionist/sort-imports': [
+        'error',
+        {
+          partitionByNewLine: true,
+          newlinesBetween: 'ignore',
+        },
+      ],
     },
-    ignores: [
-      '**/dist',
-    ],
+  },
+
+  {
+    name: 'app/files-to-ignore',
+    ignores: ['**/dist/**', '**/coverage/**', 'logs', 'upload', 'tsconfig.*'],
   },
 )
