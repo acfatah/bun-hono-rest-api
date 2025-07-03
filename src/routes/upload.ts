@@ -4,7 +4,7 @@ import { Hono } from 'hono'
 export const uploadRoute = new Hono()
 
 // upload route example
-uploadRoute.post('/upload', async (ctx) => {
+uploadRoute.post('/', async (ctx) => {
   // TODO: should have authentication
 
   // [Option 1]: Using form
@@ -22,6 +22,9 @@ uploadRoute.post('/upload', async (ctx) => {
 
   return ctx.json({
     success: true,
-    data: name,
+    data: {
+      filename: name,
+      url: path,
+    },
   })
 })

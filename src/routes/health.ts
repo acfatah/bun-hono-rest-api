@@ -9,7 +9,7 @@ export interface HealthCheck {
 }
 export const healthRoute = new Hono()
 
-healthRoute.get('/health', (ctx) => {
+healthRoute.get('/', (ctx) => {
   const healthCheck: HealthCheck = {
     status: 'ok',
     uptime: process.uptime(),
