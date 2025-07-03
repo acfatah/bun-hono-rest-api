@@ -3,6 +3,10 @@
   "scripts": {
     "start": "bun run src/index.ts",
     "dev": "bun run --hot src/index.ts",
+    "db:migrate": "bunx --bun drizzle-kit migrate",
+    "db:generate": "bunx --bun drizzle-kit generate",
+    "db:push": "bunx --bun drizzle-kit push",
+    "db:pull": "bunx --bun drizzle-kit pull",
     "lint": "bunx --bun eslint",
     "lint:changed": "bunx --bun eslint --pass-on-no-patterns --no-warn-ignored $(git diff --name-only --diff-filter=d HEAD)",
     "lint:staged": "bunx --bun eslint --pass-on-no-patterns --no-warn-ignored $(git diff --cached --name-only --diff-filter=d)",
