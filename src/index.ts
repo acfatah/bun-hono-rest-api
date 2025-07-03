@@ -4,7 +4,7 @@ import { logger } from 'hono/logger'
 import { secureHeaders } from 'hono/secure-headers'
 import process from 'node:process'
 import { db } from './lib/db'
-import { useRoutes } from './routes'
+import { useRoutes } from './routing'
 
 // Here we are applying codebase first approach (Option 4) for migration.
 // Read more at https://orm.drizzle.team/docs/migrations.

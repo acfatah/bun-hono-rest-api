@@ -1,12 +1,9 @@
-import type { Hono } from 'hono'
-import { healthRoute } from './health'
-import { staticRoute } from './public'
-import { uploadRoute } from './upload'
+import { Hono } from 'hono'
 
-export function useRoutes(app: Hono) {
-  app.route('/', healthRoute)
-  app.route('/', staticRoute)
-  app.route('/', uploadRoute)
+export const indexRoute = new Hono()
 
-  return app
-}
+indexRoute.get('/', (ctx) => {
+  return ctx.json({
+    message: 'API is running',
+  })
+})
