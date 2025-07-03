@@ -5,7 +5,7 @@ import { text } from 'drizzle-orm/sqlite-core'
 export const timestamps = {
   createdAt: text('created_at')
     .notNull()
-    .default(sql`(CURRENT_TIMESTAMP)`),
+    .default(sql`(current_timestamp)`),
   updatedAt: text('update_at'),
   deletedAt: text('deleted_at'),
 }
