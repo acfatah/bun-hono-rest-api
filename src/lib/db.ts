@@ -16,4 +16,7 @@ if (!process.env.SQLITE_DB_PATH) {
 
 const sqlite = new Database(filename)
 
-export const db = drizzle(sqlite, { logger: true })
+export const db = drizzle(sqlite, {
+  logger: true,
+  casing: 'snake_case',
+})
