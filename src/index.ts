@@ -2,7 +2,7 @@ import { Hono } from 'hono'
 import { logger } from 'hono/logger'
 import { secureHeaders } from 'hono/secure-headers'
 import process from 'node:process'
-import { useRoutes } from './routes'
+import { useRoutes } from './routing'
 
 const app = new Hono()
 app.use(logger())
