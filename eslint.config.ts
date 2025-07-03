@@ -21,6 +21,13 @@ export default antfu(
 
   {
     name: 'app/files-to-ignore',
-    ignores: ['**/dist/**', '**/coverage/**', 'logs', 'upload', 'tsconfig.*'],
+    ignores: [
+      '**/dist/**',
+      '**/coverage/**',
+      'logs',
+      'upload',
+      'drizzle',
+      'tsconfig.*',
+    ],
   },
 )
