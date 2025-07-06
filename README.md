@@ -2,13 +2,17 @@
 
 <p>
   <a href="https://bun.sh">
-    <img alt="bun.sh" src="https://img.shields.io/badge/Bun-%23000000.svg?style=flat-square&logo=bun&logoColor=white">
-  </a>
+    <img
+      alt="bun.sh"
+      src="https://img.shields.io/badge/Bun-%23000000.svg?style=flat-square&logo=bun&logoColor=white"></a>
   <a href="https://github.com/antfu/eslint-config">
-    <img alt="Code Style" src="https://antfu.me/badge-code-style.svg">
-  </a>
+    <img
+      alt="Code Style"
+      src="https://antfu.me/badge-code-style.svg"></a>
   <a href="https://github.com/acfatah/bun-hono-rest-api/commits/main">
-  <img alt="GitHub last commit (by committer)" src="https://img.shields.io/github/last-commit/acfatah/bun-hono-rest-api?display_timestamp=committer&style=flat-square"></a>
+  <img
+    alt="GitHub last commit (by committer)"
+    src="https://img.shields.io/github/last-commit/acfatah/bun-hono-rest-api?display_timestamp=committer&style=flat-square"></a>
 </p>
 
 RESTful API boilerplate using [Hono](https://hono.dev), running on [bun](https://bun.sh).
