@@ -6,6 +6,8 @@ import process from 'node:process'
 import { db } from './lib/db'
 import { useRoutes } from './routing'
 
+export const DEFAULT_PORT = 3000 as const
+
 // Here we are applying codebase first approach (Option 4) for migration.
 // Read more at https://orm.drizzle.team/docs/migrations.
 migrate(db, { migrationsFolder: './drizzle' })
@@ -18,5 +20,5 @@ useRoutes(app)
 export default {
   fetch: app.fetch,
   request: app.request,
-  port: process.env.PORT || 3000,
+  port: process.env.PORT || DEFAULT_PORT,
 }
