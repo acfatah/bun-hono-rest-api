@@ -1,5 +1,5 @@
-import app from '@/index'
 import { describe, expect, it } from 'bun:test'
+import app from '@/index'
 
 describe('app', () => {
   describe('the GET /health', () => {
