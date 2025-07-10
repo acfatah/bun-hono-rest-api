@@ -1,6 +1,6 @@
-import { db } from '@/lib/db'
 import { describe, expect, it } from 'bun:test'
 import { sql } from 'drizzle-orm'
+import { db } from '@/lib/db'
 
 describe('db', () => {
   it('should be defined', () => {
