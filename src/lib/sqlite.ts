@@ -8,10 +8,17 @@ import { Database } from 'bun:sqlite'
 import { drizzle } from 'drizzle-orm/bun-sqlite'
 import process from 'node:process'
 
-const filename = process.env.SQLITE_DB_PATH || ':memory:'
+let filename = ':memory:'
 
-if (!process.env.SQLITE_DB_PATH) {
-  console.warn('SQLITE_DB_PATH environment variable is not set. Using memory storage.')
+if (process.env.NODE_ENV === 'production') {
+  filename = process.env.SQLITE_DB_PATH || 'data.sqlite3'
+}
+else if (process.env.NODE_ENV === 'test') {
+  filename = ':memory:'
+}
+else {
+  // development
+  filename = 'data-dev.sqlite3'
 }
 
 const sqlite = new Database(filename)

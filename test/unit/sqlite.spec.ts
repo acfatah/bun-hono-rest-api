@@ -1,14 +1,15 @@
 import { describe, expect, it } from 'bun:test'
 import { sql } from 'drizzle-orm'
-import { db } from '@/lib/db'
+import { db } from '@/lib/sqlite'
+import '../bootstrap'
 
-describe('db', () => {
+describe('sqlite db', () => {
   it('should be defined', () => {
     expect(db).toBeDefined()
   })
 })
 
-describe('db', () => {
+describe('sqlite db', () => {
   it('should connect successfully to the database', async () => {
     let isConnected = false
     let result: number | undefined

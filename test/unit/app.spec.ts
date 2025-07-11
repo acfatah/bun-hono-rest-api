@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'bun:test'
 import app from '@/index'
+import '../bootstrap'
 
 describe('app', () => {
   describe('the GET /health', () => {
