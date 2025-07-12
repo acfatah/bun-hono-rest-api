@@ -6,6 +6,11 @@ const options: DebugLogOptions = {
   colorEnabled: true,
 }
 
+const transport = {
+  target: 'hono-pino/debug-log',
+  options,
+}
+
 let defaultOptions
 
 if (process.env.NODE_ENV === 'production') {
@@ -13,18 +18,19 @@ if (process.env.NODE_ENV === 'production') {
 }
 else if (process.env.NODE_ENV === 'test') {
   defaultOptions = {
-    level: 'silent',
+    level: process.env.LOG_LEVEL || 'silent',
+    ...(process.env.LOG_LEVEL && {
+      base: null,
+      transport,
+    }),
   }
 }
 else {
   // development
   defaultOptions = {
-    base: null,
     level: process.env.LOG_LEVEL || 'info',
-    transport: {
-      target: 'hono-pino/debug-log',
-      options,
-    },
+    base: null,
+    transport,
   }
 }
 
