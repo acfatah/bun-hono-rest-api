@@ -1,8 +1,8 @@
 import { Hono } from 'hono'
-import { logger } from 'hono/logger'
 import { secureHeaders } from 'hono/secure-headers'
 import process from 'node:process'
 import { migrate } from '@/lib/sqlite-migrator'
+import { logger } from '@/middlewares/logger'
 import { useRoutes } from '@/routing'
 
 const DEFAULT_PORT = 3000
