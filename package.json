@@ -14,7 +14,10 @@
     "precommit": "bun run lint:staged"
   },
   "dependencies": {
-    "hono": "^4.8.4"
+    "drizzle-orm": "^0.44.2",
+    "hono": "^4.8.4",
+    "hono-pino": "^0.9.1",
+    "pino": "^9.7.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.16.2",
