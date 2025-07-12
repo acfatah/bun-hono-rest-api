@@ -1,7 +1,8 @@
+import { cuid2 } from 'drizzle-cuid2/sqlite'
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 
 export const user = sqliteTable('user', {
-  id: text('id').primaryKey(),
+  id: cuid2('id').defaultRandom().primaryKey(),
   name: text('name').notNull(),
   email: text('email').notNull().unique(),
   emailVerified: integer('email_verified', { mode: 'boolean' }).$defaultFn(() => !1).notNull(),
@@ -11,7 +12,7 @@ export const user = sqliteTable('user', {
 })
 
 export const session = sqliteTable('session', {
-  id: text('id').primaryKey(),
+  id: cuid2('id').defaultRandom().primaryKey(),
   expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull(),
   token: text('token').notNull().unique(),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
@@ -22,7 +23,7 @@ export const session = sqliteTable('session', {
 })
 
 export const account = sqliteTable('account', {
-  id: text('id').primaryKey(),
+  id: cuid2('id').defaultRandom().primaryKey(),
   accountId: text('account_id').notNull(),
   providerId: text('provider_id').notNull(),
   userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
@@ -38,7 +39,7 @@ export const account = sqliteTable('account', {
 })
 
 export const verification = sqliteTable('verification', {
-  id: text('id').primaryKey(),
+  id: cuid2('id').defaultRandom().primaryKey(),
   identifier: text('identifier').notNull(),
   value: text('value').notNull(),
   expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull(),

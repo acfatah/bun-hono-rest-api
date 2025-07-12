@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "better-auth": "^1.2.12",
+    "drizzle-cuid2": "^2.1.0",
     "drizzle-orm": "^0.44.2",
     "hono": "^4.8.4",
     "hono-pino": "^0.9.1",
