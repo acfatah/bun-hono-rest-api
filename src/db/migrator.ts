@@ -11,7 +11,7 @@ export function migrate() {
   }
   catch (error) {
     if (error instanceof Error && error.message.match(/Can't find meta\/_journal\.json file/))
-      console.warn('Please run `bun db:init` to initialize the database.')
+      console.warn('Please run `bun db:generate` to initialize the database.')
     else
       console.error(error)
 
