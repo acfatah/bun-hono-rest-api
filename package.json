@@ -3,7 +3,7 @@
   "scripts": {
     "start": "bun run src/index.ts",
     "dev": "bun run --hot src/index.ts",
-    "db:init": "bunx --bun drizzle-kit generate",
+    "db:generate": "bunx --bun drizzle-kit generate",
     "db:migrate": "bunx --bun drizzle-kit migrate",
     "db:push": "bunx --bun drizzle-kit push",
     "db:pull": "bunx --bun drizzle-kit pull",

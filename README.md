@@ -58,5 +58,5 @@ bun run dev
 then open http://localhost:3000.
 
 > !IMPORTANT
-> You need to run `bun db:init` for the first time to generate drizzle files,
+> You need to run `bun db:generate` for the first time to generate drizzle files,
 > assuming you already have the schema files.
