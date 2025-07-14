@@ -25,6 +25,7 @@
     "eslint": "^9.31.0",
     "eslint-plugin-format": "^1.0.1",
     "jiti": "^2.4.2",
+    "pino-pretty": "^13.0.0",
     "simple-git-hooks": "^2.13.0"
   },
   "simple-git-hooks": {
