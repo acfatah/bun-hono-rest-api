@@ -7,9 +7,7 @@ describe('sqlite db', () => {
   it('should be defined', () => {
     expect(db).toBeDefined()
   })
-})
 
-describe('sqlite db', () => {
   it('should connect successfully to the database', async () => {
     let isConnected = false
     let result: number | undefined
