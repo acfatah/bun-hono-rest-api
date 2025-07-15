@@ -3,9 +3,9 @@ import '../bootstrap'
 import { signInUser, signUpUser } from './setup'
 
 import { eq } from 'drizzle-orm'
+import { db } from '@/db'
 import * as schema from '@/db/schema'
 import app from '@/index'
-import { db } from '@/lib/sqlite'
 
 describe('protected route', async () => {
   const email = 'test@example.com'

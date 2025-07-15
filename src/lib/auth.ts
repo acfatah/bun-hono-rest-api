@@ -1,9 +1,9 @@
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import process from 'node:process'
-import * as schema from '@/db/schema'
 // import { sendEmail } from '@/lib/mailer'
-import { db } from '@/lib/sqlite'
+import { db } from '@/db'
+import * as schema from '@/db/schema'
 
 export interface AuthType {
   user: typeof auth.$Infer.Session.user | null
