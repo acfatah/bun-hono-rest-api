@@ -6,15 +6,28 @@ const options: DebugLogOptions = {
   colorEnabled: true,
 }
 
+const logLevelOrSilent = process.env.LOG_LEVEL || 'silent'
 let defaultOptions
 
 if (process.env.NODE_ENV === 'production') {
-  defaultOptions = {}
+  defaultOptions = {
+    level: logLevelOrSilent,
+    ...(logLevelOrSilent !== 'silent' && {
+      base: null,
+      transport: {
+        target: 'pino/file',
+        options: {
+          append: false,
+          destination: 'production.log',
+        },
+      },
+    }),
+  }
 }
 else if (process.env.NODE_ENV === 'test') {
   defaultOptions = {
-    level: process.env.LOG_LEVEL || 'silent',
-    ...(process.env.LOG_LEVEL && {
+    level: logLevelOrSilent,
+    ...(logLevelOrSilent !== 'silent' && {
       base: null,
       transport: {
         target: 'pino/file',
