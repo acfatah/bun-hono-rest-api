@@ -2,7 +2,7 @@ import process from 'node:process'
 
 // Drizzle sqlite migrator
 import { migrate as drizzleMigrate } from 'drizzle-orm/bun-sqlite/migrator'
-import { db } from '@/lib/sqlite'
+import { db } from '@/db'
 import drizzleConfig from '../../drizzle.config'
 
 export function migrate() {
