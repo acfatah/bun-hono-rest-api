@@ -23,9 +23,10 @@ else {
   filename = 'data-dev.sqlite2'
 }
 
-const sqlite = new Database(filename)
+const client = new Database(filename)
 
-export const db = drizzle<typeof schema>(sqlite, {
+export const db = drizzle<typeof schema>({
+  client,
   schema,
   logger,
   casing: 'snake_case',
