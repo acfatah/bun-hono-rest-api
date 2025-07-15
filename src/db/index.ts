@@ -7,6 +7,7 @@
 import { Database } from 'bun:sqlite'
 import { drizzle } from 'drizzle-orm/bun-sqlite'
 import process from 'node:process'
+import { logger } from '@/db/logger'
 
 let filename = ':memory:'
 
@@ -24,6 +25,6 @@ else {
 const sqlite = new Database(filename)
 
 export const db = drizzle(sqlite, {
-  logger: true,
+  logger,
   casing: 'snake_case',
 })
