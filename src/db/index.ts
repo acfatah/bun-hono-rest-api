@@ -11,14 +11,14 @@ import process from 'node:process'
 let filename = ':memory:'
 
 if (process.env.NODE_ENV === 'production') {
-  filename = process.env.SQLITE_DB_PATH || 'data.sqlite3'
+  filename = process.env.SQLITE_DB_PATH || 'data.sqlite2'
 }
 else if (process.env.NODE_ENV === 'test') {
   filename = ':memory:'
 }
 else {
   // development
-  filename = 'data-dev.sqlite3'
+  filename = 'data-dev.sqlite2'
 }
 
 const sqlite = new Database(filename)

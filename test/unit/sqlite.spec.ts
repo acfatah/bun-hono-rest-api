@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test'
 import { sql } from 'drizzle-orm'
-import { db } from '@/lib/sqlite'
+import { db } from '@/db'
 import '../bootstrap'
 
 describe('sqlite db', () => {
