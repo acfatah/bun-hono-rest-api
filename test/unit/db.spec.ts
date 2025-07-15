@@ -3,7 +3,7 @@ import { sql } from 'drizzle-orm'
 import { db } from '@/db'
 import '../bootstrap'
 
-describe('sqlite db', () => {
+describe('db', () => {
   it('should be defined', () => {
     expect(db).toBeDefined()
   })
