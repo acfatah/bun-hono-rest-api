@@ -7,6 +7,7 @@
 import { Database } from 'bun:sqlite'
 import { drizzle } from 'drizzle-orm/bun-sqlite'
 import process from 'node:process'
+import type * as schema from '@/db/schema'
 import { logger } from '@/db/logger'
 
 let filename = ':memory:'
@@ -24,7 +25,7 @@ else {
 
 const sqlite = new Database(filename)
 
-export const db = drizzle(sqlite, {
+export const db = drizzle<typeof schema>(sqlite, {
   logger,
   casing: 'snake_case',
 })
