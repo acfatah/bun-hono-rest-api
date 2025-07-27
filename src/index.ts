@@ -2,7 +2,7 @@ import { Hono } from 'hono'
 import { secureHeaders } from 'hono/secure-headers'
 import process from 'node:process'
 import { logger } from '@/middlewares/logger'
-import { useRoutes } from '@/routing'
+import { useRoutes } from '@/router'
 
 export const DEFAULT_PORT = 3000 as const
 
