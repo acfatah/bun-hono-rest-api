@@ -1,6 +1,8 @@
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import process from 'node:process'
+// import { createAuthMiddleware } from "better-auth/api"
+
 // import { sendEmail } from '@/lib/mailer'
 import { db } from '@/db'
 import * as schema from '@/db/schema'
@@ -46,5 +48,21 @@ export const auth = betterAuth({
     //     })
     //   },
     // },
+  },
+
+  hooks: {
+    // // Use the "after" hook to modify auth handler body response
+    // after: createAuthMiddleware(async (ctx) => {
+    //   if (ctx.path.startsWith("/sign-in")) {
+    //     const newSession = ctx.context.newSession;
+
+    //     if (newSession) {
+    //       const { name, ...user } = newSession.user
+    //       const { token } = newSession.session
+
+    //       return { token, user }
+    //     }
+    //   }
+    // }),
   },
 })
