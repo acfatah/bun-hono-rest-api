@@ -5,8 +5,8 @@ import process from 'node:process'
 import { db } from '@/db'
 import * as schema from '@/db/schema'
 
-if (!process.env.AUTH_SECRET) {
-  console.error('AUTH_SECRET is not set')
+if (!process.env.BETTER_AUTH_SECRET && !process.env.AUTH_SECRET) {
+  console.error('AUTH_SECRET or BETTER_AUTH_SECRET is not set')
 
   process.exit(1)
 }
