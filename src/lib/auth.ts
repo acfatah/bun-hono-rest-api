@@ -17,7 +17,7 @@ export interface AuthType {
 }
 
 export const auth = betterAuth({
-  baseUrl: process.env.BASE_URL,
+  baseURL: process.env.BASE_URL,
 
   database: drizzleAdapter(db, {
     provider: 'sqlite',
