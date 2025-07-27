@@ -45,8 +45,7 @@ else {
     base: null,
     level: process.env.LOG_LEVEL || 'info',
     transport: {
-      // To have more lightweight logs, use the 'hono-pino/debug-log' target
-      // for transport.
+      // Replace target value with 'hono-pino/debug-log' to have simpler output.
       target: 'pino-pretty',
       options,
     },
