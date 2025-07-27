@@ -5,6 +5,12 @@ import process from 'node:process'
 import { db } from '@/db'
 import * as schema from '@/db/schema'
 
+if (!process.env.AUTH_SECRET) {
+  console.error('AUTH_SECRET is not set')
+
+  process.exit(1)
+}
+
 export interface AuthType {
   user: typeof auth.$Infer.Session.user | null
   session: typeof auth.$Infer.Session.session | null
