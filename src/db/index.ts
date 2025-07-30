@@ -13,14 +13,14 @@ import * as schema from '@/db/schema'
 let filename = ':memory:'
 
 if (process.env.NODE_ENV === 'production') {
-  filename = process.env.SQLITE_DB_PATH || 'data.sqlite2'
+  filename = process.env.SQLITE_DB_PATH || 'data.sqlite3'
 }
 else if (process.env.NODE_ENV === 'test') {
   filename = ':memory:'
 }
 else {
   // development
-  filename = 'data-dev.sqlite2'
+  filename = 'data-dev.sqlite3'
 }
 
 const client = new Database(filename)
