@@ -8,7 +8,7 @@
     "templates/*"
   ],
   "scripts": {
-    "update:all": "bun update; cd templates; for tpl in $(ls); do cd $tpl && echo $tpl && bun update && cd \"..\"; done",
+    "update:all": "bun update; cd templates; for tpl in $(ls); do cd $tpl && echo \"\nUpdating $tpl template\"... && bun update && cd \"..\"; done",
     "lint": "bunx --bun eslint",
     "lint:changed": "bunx --bun eslint --pass-on-no-patterns --no-warn-ignored $(git diff --name-only --diff-filter=d HEAD)",
     "lint:staged": "bunx --bun eslint --pass-on-no-patterns --no-warn-ignored $(git diff --cached --name-only --diff-filter=d)",
@@ -18,11 +18,11 @@
     "precommit": "bun run lint:staged"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^4.16.2",
+    "@antfu/eslint-config": "^4.19.0",
     "@types/bun": "latest",
-    "eslint": "^9.31.0",
+    "eslint": "^9.32.0",
     "eslint-plugin-format": "^1.0.1",
-    "jiti": "^2.4.2",
+    "jiti": "^2.5.1",
     "simple-git-hooks": "^2.13.0"
   },
   "simple-git-hooks": {
