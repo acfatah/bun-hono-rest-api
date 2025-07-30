@@ -1,0 +1,10 @@
+@base_url=http://localhost:3000
+
+###
+GET {{base_url}}/
+
+###
+GET {{base_url}}/health
+
+###
+GET {{base_url}}/robots.txt

@@ -1,0 +1,28 @@
+@base_url=http://localhost:3000
+
+###
+POST {{base_url}}/api/auth/sign-in/email
+content-type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "P@55w0rd"
+}
+
+
+###
+POST {{base_url}}/api/auth/sign-up/email
+content-type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "P@55w0rd"
+}
+
+
+###
+POST {{base_url}}/api/auth/sign-out
+
+
+###
+GET {{base_url}}/protected
