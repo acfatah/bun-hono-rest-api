@@ -8,6 +8,7 @@
     "templates/*"
   ],
   "scripts": {
+    "update:all": "bun update; cd templates; for tpl in $(ls); do cd $tpl && echo $tpl && bun update && cd \"..\"; done",
     "lint": "bunx --bun eslint",
     "lint:changed": "bunx --bun eslint --pass-on-no-patterns --no-warn-ignored $(git diff --name-only --diff-filter=d HEAD)",
     "lint:staged": "bunx --bun eslint --pass-on-no-patterns --no-warn-ignored $(git diff --cached --name-only --diff-filter=d)",
