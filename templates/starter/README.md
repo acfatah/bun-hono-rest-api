@@ -19,35 +19,40 @@ RESTful API boilerplate using [Hono](https://hono.dev), running on [bun](https:/
 
 ## Usage
 
-`mkdir` your project name, `cd` to it then run,
+1. Copy the repository,
 
 ```bash
-bunx --bun tiged acfatah/bun-hono-rest-api/templates/starter
+bunx tiged acfatah/bun-hono-rest-api newproject
 ```
 
-Then run the following to update and install latest dependencies available.
+2. Initialize git,
+
+```bash
+git init
+```
+
+3. Include the `.vscode` directory in your repository to ensure consistent settings for all developers. Use git add -f `.vscode` to force add it, bypassing any ignore rules.
+
+```bash
+git add -f .vscode
+```
+
+4. Initialize `simple-git-hooks`,
+
+```bash
+rm -rf .git/hooks && bunx simple-git-hooks
+```
+
+5. Update and install dependencies
 
 ```bash
 bun update
 ```
 
-Look under the `templates` directory to see the other available templates.
-Replace `/starter` with the template that you want to use.
-
-## Post-install Scripts
-
-By default, `bun` will block all post-install scripts, notably `simple-git-hooks`.
-
-To list all of them, run
+To start development, run:
 
 ```bash
-bun pm unstrusted
+bun run dev
 ```
 
-To execute them, run
-
-```bash
-bun pm trust --all
-```
-
-or specify the package name one by one.
+then open http://localhost:3000.

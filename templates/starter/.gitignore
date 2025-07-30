@@ -50,5 +50,8 @@ lerna-debug.log*
 package-lock.json
 **/*.bun
 
-# we dont keep template's lock file
-templates/*/bun.lock
+# uploaded files directory
+upload
+
+# sqlite
+*.db
