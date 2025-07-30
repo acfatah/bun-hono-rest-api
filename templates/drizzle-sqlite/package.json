@@ -1,8 +1,12 @@
 {
-  "name": "starter",
+  "name": "drizzle-sqlite",
   "scripts": {
     "start": "bun run src/index.ts",
     "dev": "bun run --hot src/index.ts",
+    "db:generate": "bunx --bun drizzle-kit generate",
+    "db:migrate": "bunx --bun drizzle-kit migrate",
+    "db:push": "bunx --bun drizzle-kit push",
+    "db:pull": "bunx --bun drizzle-kit pull",
     "lint": "bunx --bun eslint",
     "lint:changed": "bunx --bun eslint --pass-on-no-patterns --no-warn-ignored $(git diff --name-only --diff-filter=d HEAD)",
     "lint:staged": "bunx --bun eslint --pass-on-no-patterns --no-warn-ignored $(git diff --cached --name-only --diff-filter=d)",
@@ -14,6 +18,7 @@
     "precommit": "bun run lint:staged"
   },
   "dependencies": {
+    "drizzle-cuid2": "^2.1.0",
     "drizzle-orm": "^0.44.2",
     "hono": "^4.8.4",
     "hono-pino": "^0.9.1",
@@ -21,8 +26,10 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.16.2",
+    "@libsql/client": "^0.15.9",
     "@types/bun": "latest",
-    "eslint": "^9.31.0",
+    "drizzle-kit": "^0.31.4",
+    "eslint": "^9.30.1",
     "eslint-plugin-format": "^1.0.1",
     "jiti": "^2.4.2",
     "pino-pretty": "^13.0.0",
