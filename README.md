@@ -1,4 +1,4 @@
-# Hono RESTful API with bun runtime
+# Hono RESTful API Boilerplate or Template with Bun Runtime
 
 <p>
   <a href="https://bun.sh">
@@ -15,17 +15,17 @@
     src="https://img.shields.io/github/last-commit/acfatah/bun-hono-rest-api?display_timestamp=committer&style=flat-square"></a>
 </p>
 
-RESTful API boilerplate using [Hono](https://hono.dev), running on [bun](https://bun.sh).
+This repository offers RESTful API boilerplates or templates for [Hono](https://hono.dev), running on the [Bun](https://bun.sh) runtime.
 
 ## Usage
 
-`mkdir` your project name, `cd` to it then run,
+To create a project using this template, make a new directory with your chosen project name, navigate into it, then run the following command:
 
 ```bash
 bunx --bun tiged acfatah/bun-hono-rest-api/templates/starter
 ```
 
-Then run the following to update and install latest dependencies available.
+Afterwards, you can update and install the latest dependencies with:
 
 ```bash
 bun update
@@ -36,9 +36,9 @@ Replace `/starter` with the template that you want to use.
 
 ## Post-install Scripts
 
-By default, `bun` will block all post-install scripts, notably `simple-git-hooks`.
+By default, `bun` will block all post-install scripts, including `simple-git-hooks`.
 
-To list all of them, run
+To list all blocked scripts, you can run:
 
 ```bash
 bun pm unstrusted
@@ -50,4 +50,4 @@ To execute them, run
 bun pm trust --all
 ```
 
-or specify the package name one by one.
+Alternatively, you can specify each package name individually.
