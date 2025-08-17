@@ -20,20 +20,20 @@
   "dependencies": {
     "drizzle-cuid2": "^2.1.0",
     "drizzle-orm": "^0.44.4",
-    "hono": "^4.8.10",
+    "hono": "^4.9.2",
     "hono-pino": "^0.9.1",
-    "pino": "^9.7.0"
+    "pino": "^9.9.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.19.0",
-    "@libsql/client": "^0.15.10",
+    "@libsql/client": "^0.15.11",
     "@types/bun": "latest",
     "drizzle-kit": "^0.31.4",
-    "eslint": "^9.32.0",
+    "eslint": "^9.33.0",
     "eslint-plugin-format": "^1.0.1",
     "jiti": "^2.5.1",
-    "pino-pretty": "^13.0.0",
-    "simple-git-hooks": "^2.13.0"
+    "pino-pretty": "^13.1.1",
+    "simple-git-hooks": "^2.13.1"
   },
   "simple-git-hooks": {
     "pre-commit": "bun precommit"
