@@ -1,7 +1,10 @@
 import type { MiddlewareHandler } from 'hono'
 import type { PinoLogger } from 'hono-pino'
-import { logger as libLogger } from '@/lib/logger'
+import { pinoLogger } from 'hono-pino'
+import { logger as pino } from '@/lib/logger'
 
 export function logger() {
-  return libLogger as unknown as MiddlewareHandler<{ Variables: { logger: PinoLogger } }>
+  return pinoLogger({ pino }) as unknown as MiddlewareHandler<{
+    Variables: { logger: PinoLogger }
+  }>
 }
