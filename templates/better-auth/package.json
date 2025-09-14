@@ -1,5 +1,8 @@
 {
   "name": "better-auth",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
   "scripts": {
     "start": "bun run src/index.ts",
     "dev": "bun run --hot src/index.ts",
@@ -10,12 +13,16 @@
     "lint": "bunx --bun eslint",
     "lint:changed": "bunx --bun eslint --pass-on-no-patterns --no-warn-ignored $(git diff --name-only --diff-filter=d HEAD)",
     "lint:staged": "bunx --bun eslint --pass-on-no-patterns --no-warn-ignored $(git diff --cached --name-only --diff-filter=d)",
-    "lint:fix": "bunx --bun eslint --fix",
-    "lint:fix-staged": "bunx --bun eslint --fix --pass-on-no-patterns --no-warn-ignored $(git diff --cached --name-only --diff-filter=d)",
     "lint:inspect": "bunx --bun eslint --inspect-config",
+    "format": "changed_files=$(git diff --name-only --diff-filter=d HEAD); bunx --bun eslint --fix --no-warn-ignored $changed_files",
+    "format:staged": "staged_files=$(git diff --cached --name-only --diff-filter=d); bunx --bun eslint --fix --pass-on-no-patterns --no-warn-ignored $staged_files && git add $staged_files",
+    "typecheck": "tsc --noEmit",
     "test": "bun test",
     "test:watch": "bun test --watch",
     "precommit": "bun run lint:staged"
+  },
+  "peerDependencies": {
+    "typescript": "^5.9.2"
   },
   "dependencies": {
     "better-auth": "^1.3.9",
