@@ -15,14 +15,14 @@
   },
   "dependencies": {
     "drizzle-orm": "^0.44.5",
-    "hono": "^4.9.5",
-    "hono-pino": "^0.9.1",
-    "pino": "^9.9.0"
+    "hono": "^4.9.7",
+    "hono-pino": "^0.10.2",
+    "pino": "^9.9.5"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.19.0",
     "@types/bun": "latest",
-    "eslint": "^9.34.0",
+    "eslint": "^9.35.0",
     "eslint-plugin-format": "^1.0.1",
     "jiti": "^2.5.1",
     "pino-pretty": "^13.1.1",
