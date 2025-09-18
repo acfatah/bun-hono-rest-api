@@ -34,9 +34,9 @@ export default antfu(
     ignores: [
       '**/dist/**',
       '**/coverage/**',
+      'drizzle/meta',
       'logs',
       'upload',
-      'drizzle',
       'tsconfig.*',
     ],
   },
