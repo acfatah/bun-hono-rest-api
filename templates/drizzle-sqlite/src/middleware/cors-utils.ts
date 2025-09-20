@@ -1,13 +1,13 @@
-import process from 'node:process'
+import { env } from '@/config/env'
 
 export function handleOrigin(origin: string) {
-  const trustedOrigins = process.env.TRUSTED_ORIGINS?.split(',') || []
+  const trustedOrigins = env.TRUSTED_ORIGINS
 
   if (trustedOrigins.includes(origin)) {
     return origin
   }
 
-  if ([undefined, 'test', 'development'].includes(process.env.NODE_ENV)) {
+  if ([undefined, 'test', 'development'].includes(env.NODE_ENV)) {
     return '*'
   }
 }

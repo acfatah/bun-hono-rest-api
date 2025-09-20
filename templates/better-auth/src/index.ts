@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { secureHeaders } from 'hono/secure-headers'
-import process from 'node:process'
+import { env } from '@/config/env'
 import { migrate } from '@/db/migrator'
 import { handleOrigin } from '@/middleware/cors-utils'
 import { logger } from '@/middleware/logger'
@@ -28,5 +28,5 @@ useRoutes(app)
 export default {
   fetch: app.fetch,
   request: app.request,
-  port: process.env.PORT || DEFAULT_PORT,
+  port: env.PORT || DEFAULT_PORT,
 }

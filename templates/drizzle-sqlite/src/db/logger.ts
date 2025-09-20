@@ -1,13 +1,13 @@
 import type { LogWriter } from 'drizzle-orm/logger'
 import { DefaultLogger } from 'drizzle-orm/logger'
-import process from 'node:process'
+import { env } from '@/config/env'
 import { logger as libLogger } from '@/lib/logger'
 
-const DEVELOPMENT_ENVIRONMENT = !process.env.NODE_ENV || process.env.NODE_ENV === 'development'
+const DEVELOPMENT_ENVIRONMENT = !env.NODE_ENV || env.NODE_ENV === 'development'
 
 class CustomLogWriter implements LogWriter {
   write(message: string) {
-    if (['debug', 'trace'].includes(process.env.LOG_LEVEL || '')) {
+    if (['debug', 'trace'].includes(env.LOG_LEVEL)) {
       // Fallback to default console log for development
       if (DEVELOPMENT_ENVIRONMENT)
         console.debug(message)

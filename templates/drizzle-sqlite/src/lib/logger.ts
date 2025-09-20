@@ -1,19 +1,18 @@
-import process from 'node:process'
 import pino from 'pino'
+import { env } from '@/config/env'
 
-const logLevelOrSilent = process.env.LOG_LEVEL || 'silent'
-const onProduction = process.env.NODE_ENV === 'production'
-const onTest = process.env.NODE_ENV === 'test'
+const PRODUCTION_ENVIRONMENT = env.NODE_ENV === 'production'
+const TEST_ENVIRONMENT = env.NODE_ENV === 'test'
 
 export const logger = pino({
   base: null,
-  level: logLevelOrSilent,
+  level: env.LOG_LEVEL,
   transport: {
-    target: onProduction || onTest ? 'pino/file' : 'pino-pretty',
+    target: PRODUCTION_ENVIRONMENT || TEST_ENVIRONMENT ? 'pino/file' : 'pino-pretty',
     options: {
-      ...(onProduction)
+      ...(PRODUCTION_ENVIRONMENT)
         ? { append: true, destination: 'production.log' }
-        : (onTest)
+        : (TEST_ENVIRONMENT)
             ? { append: false, destination: 'test.log' }
             : { colorEnabled: true }, // development
     },
