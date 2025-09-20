@@ -1,8 +1,7 @@
 import type { Hono } from 'hono'
 import { assetsRoute } from '@/modules/assets/assets.routes'
+import { healthRoute } from '@/modules/health/health.routes'
 import { uploadRoute } from '@/modules/upload/upload.routes'
-import { healthRoute } from '@/routes/health'
-import { indexRoute } from '@/routes/index'
 
 import { auth } from '@/modules/auth/auth.provider'
 
@@ -12,7 +11,11 @@ import { protectedRoute } from '@/routes/protected'
 export function useRoutes(app: Hono) {
   app.route('/health', healthRoute)
   app.route('/upload', uploadRoute)
-  app.route('/', indexRoute)
+
+  // Home route
+  app.get('/', ctx => ctx.json({
+    message: 'API is running',
+  }))
 
   // Auth handler
   app.on(['POST', 'GET'], '/api/auth/**', ctx => auth.handler(ctx.req.raw))
