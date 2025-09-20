@@ -1,8 +1,8 @@
 import type { Hono } from 'hono'
+import { assetsRoute } from '@/modules/assets/assets.routes'
+import { uploadRoute } from '@/modules/upload/upload.routes'
 import { healthRoute } from './routes/health'
 import { indexRoute } from './routes/index'
-import { staticRoute } from './routes/public'
-import { uploadRoute } from './routes/upload'
 
 export function useRoutes(app: Hono) {
   app.route('/health', healthRoute)
@@ -10,7 +10,7 @@ export function useRoutes(app: Hono) {
   app.route('/', indexRoute)
 
   // Serve static files under public directory
-  app.route('/', staticRoute)
+  app.route('/', assetsRoute)
 
   return app
 }
