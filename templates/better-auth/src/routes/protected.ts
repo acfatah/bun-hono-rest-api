@@ -1,5 +1,5 @@
 import { Hono } from 'hono'
-import { session } from '@/middlewares/session'
+import { session } from '@/middleware/session'
 
 export const protectedRoute = new Hono()
 

@@ -3,8 +3,8 @@ import { cors } from 'hono/cors'
 import { secureHeaders } from 'hono/secure-headers'
 import process from 'node:process'
 import { migrate } from '@/db/migrator'
-import { handleOrigin } from '@/middlewares/cors-utils'
-import { logger } from '@/middlewares/logger'
+import { handleOrigin } from '@/middleware/cors-utils'
+import { logger } from '@/middleware/logger'
 import { useRoutes } from '@/router'
 
 const DEFAULT_PORT = 3000
