@@ -20,6 +20,8 @@
   "devDependencies": {
     "@antfu/eslint-config": "^4.19.0",
     "@types/bun": "latest",
+    "@types/common-tags": "^1.8.4",
+    "common-tags": "^1.8.2",
     "eslint": "^9.33.0",
     "eslint-plugin-format": "^1.0.1",
     "jiti": "^2.5.1",
