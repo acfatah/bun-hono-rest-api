@@ -3,7 +3,7 @@
 import type { Dirent } from 'node:fs'
 import Bun from 'bun'
 import { join } from 'pathe'
-import { readDir } from '../utils'
+import { readDir } from './utils'
 
 async function updateTemplate(dirent: Dirent): Promise<void> {
   const templatePath = join(dirent.parentPath, dirent.name)
@@ -27,7 +27,8 @@ async function updateTemplate(dirent: Dirent): Promise<void> {
   const exitCode = await proc.exited
 
   if (exitCode) {
-    const errorMessage = await proc.stderr?.text()
+    const errorMessage = proc.stderr ? await new Response(proc.stderr).text() : ''
+
     console.group(`Error updating "${templatePath}":`)
     console.error(errorMessage)
     console.groupEnd()

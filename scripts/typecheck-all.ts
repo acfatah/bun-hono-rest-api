@@ -3,7 +3,7 @@
 import type { Dirent } from 'node:fs'
 import Bun from 'bun'
 import { join } from 'pathe'
-import { readDir } from '../utils'
+import { readDir } from './utils'
 
 async function typecheckTemplate(dirent: Dirent): Promise<void> {
   const templatePath = join(dirent.parentPath, dirent.name)

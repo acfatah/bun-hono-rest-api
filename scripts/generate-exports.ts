@@ -11,7 +11,7 @@ import process from 'node:process'
 import { parseArgs } from 'node:util'
 import { join } from 'pathe'
 
-import { readDir, readLine, writeFile } from '../utils'
+import { readDir, readLine, writeFile } from './utils'
 
 const argv = typeof Bun !== 'undefined' ? Bun.argv : process.argv
 
