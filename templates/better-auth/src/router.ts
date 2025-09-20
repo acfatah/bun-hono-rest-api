@@ -16,7 +16,7 @@ export function useRoutes(app: Hono) {
   }))
 
   // Auth handler
-  app.on(['POST', 'GET'], '/api/auth/**', ctx => auth.handler(ctx.req.raw))
+  app.on(['POST', 'GET'], '/api/auth/*', ctx => auth.handler(ctx.req.raw))
 
   // Example signed in routes
   app.get('/protected', session(), ctx => ctx.json({
