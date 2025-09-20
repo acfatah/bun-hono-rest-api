@@ -18,7 +18,7 @@ const url = resolveSqlitePath()
 
 export default defineConfig({
   dialect: 'sqlite',
-  schema: './src/db/schema',
+  schema: './src/db/schema.ts',
   out: './drizzle',
   dbCredentials: {
     url,

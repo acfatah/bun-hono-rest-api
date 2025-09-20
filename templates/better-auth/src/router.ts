@@ -4,7 +4,7 @@ import { indexRoute } from '@/routes/index'
 import { staticRoute } from '@/routes/public'
 import { uploadRoute } from '@/routes/upload'
 
-import { auth } from '@/lib/auth'
+import { auth } from '@/modules/auth/auth.provider'
 
 // Example route that require auth
 import { protectedRoute } from '@/routes/protected'
