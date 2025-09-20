@@ -1,23 +1,25 @@
 import { defineConfig } from 'drizzle-kit'
 import process from 'node:process'
 
-let url: string
+export function resolveSqlitePath() {
+  if (['production', 'staging'].includes(process.env.NODE_ENV || '')) {
+    return process.env.SQLITE_DB_PATH || '../../data.sqlite3'
+  }
+  else if (process.env.NODE_ENV === 'test') {
+    return ':memory:'
+  }
+  else {
+    // development
+    return '../../data.development.sqlite3'
+  }
+}
 
-if (process.env.NODE_ENV === 'production') {
-  url = process.env.SQLITE_DB_PATH || 'data.sqlite3'
-}
-else if (process.env.NODE_ENV === 'test') {
-  url = ':memory:'
-}
-else {
-  // development
-  url = 'data-dev.sqlite3'
-}
+const url = resolveSqlitePath()
 
 export default defineConfig({
   dialect: 'sqlite',
-  out: './drizzle',
   schema: './src/db/schema',
+  out: './drizzle',
   dbCredentials: {
     url,
   },
