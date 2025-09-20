@@ -5,12 +5,12 @@ export function resolveSqlitePath() {
   if (['production', 'staging'].includes(process.env.NODE_ENV || '')) {
     return process.env.SQLITE_DB_PATH || './data.sqlite3'
   }
-  else if (process.env.NODE_ENV === 'test') {
-    return ':memory:'
+  else if (process.env.NODE_ENV === 'development') {
+    return './data.development.sqlite3'
   }
   else {
-    // development
-    return './data.development.sqlite3'
+    // test
+    return ':memory:'
   }
 }
 
