@@ -1,10 +1,10 @@
 import Bun from 'bun'
 import { Hono } from 'hono'
 
-export const uploadRoute = new Hono()
+export const uploadRoutes = new Hono()
 
 // upload route example
-uploadRoute.post('/', async (ctx) => {
+uploadRoutes.post('/', async (ctx) => {
   // TODO: should have authentication
 
   // [Option 1]: Using form

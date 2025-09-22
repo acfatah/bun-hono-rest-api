@@ -7,9 +7,9 @@ export interface HealthCheck {
   timestamp: string
   error?: string
 }
-export const healthRoute = new Hono()
+export const healthRoutes = new Hono()
 
-healthRoute.get('/', (ctx) => {
+healthRoutes.get('/', (ctx) => {
   const healthCheck: HealthCheck = {
     status: 'ok',
     uptime: process.uptime(),

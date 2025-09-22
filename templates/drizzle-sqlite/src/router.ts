@@ -1,11 +1,11 @@
 import type { Hono } from 'hono'
-import { assetsRoute } from '@/modules/assets/assets.routes'
-import { healthRoute } from '@/modules/health/health.routes'
-import { uploadRoute } from '@/modules/upload/upload.routes'
+import { assetsRoutes } from '@/modules/assets/assets.routes'
+import { healthRoutes } from '@/modules/health/health.routes'
+import { uploadRoutes } from '@/modules/upload/upload.routes'
 
 export function useRoutes(app: Hono) {
-  app.route('/health', healthRoute)
-  app.route('/upload', uploadRoute)
+  app.route('/health', healthRoutes)
+  app.route('/upload', uploadRoutes)
 
   // Home route
   app.get('/', ctx => ctx.json({
@@ -13,7 +13,7 @@ export function useRoutes(app: Hono) {
   }))
 
   // Serve static files under public directory
-  app.route('/', assetsRoute)
+  app.route('/', assetsRoutes)
 
   return app
 }

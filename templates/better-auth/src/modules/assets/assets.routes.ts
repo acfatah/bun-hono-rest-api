@@ -5,6 +5,6 @@
 import { Hono } from 'hono'
 import { serveStatic } from 'hono/bun'
 
-export const assetsRoute = new Hono()
+export const assetsRoutes = new Hono()
 
-assetsRoute.get('*', serveStatic({ root: './public' }))
+assetsRoutes.get('*', serveStatic({ root: './public' }))
