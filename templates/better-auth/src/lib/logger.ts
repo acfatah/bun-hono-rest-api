@@ -11,9 +11,9 @@ export const logger = pino({
     target: PRODUCTION_ENVIRONMENT || TEST_ENVIRONMENT ? 'pino/file' : 'pino-pretty',
     options: {
       ...(PRODUCTION_ENVIRONMENT)
-        ? { append: true, destination: 'production.log' }
+        ? { append: true, destination: env.PRODUCTION_LOG_FILE }
         : (TEST_ENVIRONMENT)
-            ? { append: false, destination: 'test.log' }
+            ? { append: false, destination: env.TEST_LOG_FILE }
             : { colorEnabled: true }, // development
     },
   },

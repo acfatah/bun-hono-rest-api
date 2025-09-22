@@ -24,16 +24,6 @@ const EnvSchema = z.object({
   BASE_URL: z.url(),
   PORT: z.coerce.number().optional(),
 
-  AUTH_SECRET: z.preprocess(
-    v => (typeof v === 'string' && v.trim() === '' ? undefined : v),
-    z.string().min(1).optional(),
-  ),
-
-  BETTER_AUTH_SECRET: z.preprocess(
-    v => (typeof v === 'string' && v.trim() === '' ? undefined : v),
-    z.string().min(1).optional(),
-  ),
-
   TRUSTED_ORIGINS: z.preprocess(
     (v) => {
       if (typeof v !== 'string')
@@ -44,7 +34,19 @@ const EnvSchema = z.object({
     z.array(z.url()).default([]),
   ),
 
+  PRODUCTION_LOG_FILE: z.string().default('production.log'),
+  TEST_LOG_FILE: z.string().default('test.log'),
   SQLITE_DB_PATH: z.string().optional(),
+
+  AUTH_SECRET: z.preprocess(
+    v => (typeof v === 'string' && v.trim() === '' ? undefined : v),
+    z.string().min(1).optional(),
+  ),
+
+  BETTER_AUTH_SECRET: z.preprocess(
+    v => (typeof v === 'string' && v.trim() === '' ? undefined : v),
+    z.string().min(1).optional(),
+  ),
 }).superRefine((input, ctx) => {
   // Either AUTH_SECRET or BETTER_AUTH_SECRET must be provided (non-empty)
   if (!input.AUTH_SECRET && !input.BETTER_AUTH_SECRET) {
