@@ -1,7 +1,7 @@
 import type { Hono } from 'hono'
 import { assetsRoutes } from '@/modules/assets/assets.routes'
+import { healthRoutes } from '@/modules/health/health.routes'
 import { uploadRoutes } from '@/modules/upload/upload.routes'
-import { healthRoutes } from './routes/health'
 
 export function useRoutes(app: Hono) {
   app.route('/health', healthRoutes)
