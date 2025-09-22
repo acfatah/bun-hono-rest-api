@@ -29,16 +29,10 @@
 
     // https://www.typescriptlang.org/tsconfig/#esModuleInterop
     "esModuleInterop": true,
-
-    "paths": {
-      "@/*": [
-        "./src/*"
-      ]
-    },
   },
 
   "include": [
-    "./src/**/*",
-    "./tests/**/*"
+    "./templates/*/src/**/*",
+    "./templates/*/tests/**/*"
   ]
 }
