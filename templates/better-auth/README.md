@@ -9,20 +9,16 @@
     <img
       alt="Code Style"
       src="https://antfu.me/badge-code-style.svg"></a>
-  <a href="https://github.com/acfatah/bun-hono-rest-api/commits/drizzle-sqlite">
-    <img
-      alt="GitHub last commit (by committer)"
-      src="https://img.shields.io/github/last-commit/acfatah/bun-hono-rest-api?display_timestamp=committer&style=flat-square"></a>
 </p>
 
-RESTful API boilerplate using [Hono](https://hono.dev), running on [bun](https://bun.sh), preinstalled with [Drizzle ORM](https://orm.drizzle.team) (sqlite).
+RESTful API boilerplate using [Hono](https://hono.dev), running on [bun](https://bun.sh), preinstalled with [Drizzle ORM](https://orm.drizzle.team) (sqlite) and [Better Auth](https://github.com/better-auth/better-auth).
 
 ## Usage
 
-1. Copy the repository,
+1. Update and install dependencies
 
 ```bash
-bunx tiged acfatah/bun-hono-rest-api newproject
+bun update --latest
 ```
 
 2. Initialize git,
@@ -40,13 +36,13 @@ git add -f .vscode
 4. Initialize `simple-git-hooks`,
 
 ```bash
-rm -rf .git/hooks && bunx simple-git-hooks
+rm -rf .git/hooks && bunx --bun simple-git-hooks
 ```
 
-5. Update and install dependencies
+5. Create initial commit
 
 ```bash
-bun update
+git commit -m --no-verify "Initial commit"
 ```
 
 To start development, run:

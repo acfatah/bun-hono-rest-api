@@ -28,7 +28,7 @@ bunx --bun tiged acfatah/bun-hono-rest-api/templates/starter
 Afterwards, you can update and install the latest dependencies with:
 
 ```bash
-bun update
+bun update --latest
 ```
 
 Look under the `templates` directory to see the other available templates.
