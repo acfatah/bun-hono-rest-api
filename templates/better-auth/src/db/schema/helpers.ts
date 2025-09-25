@@ -4,8 +4,14 @@ import { text } from 'drizzle-orm/sqlite-core'
 
 // https://orm.drizzle.team/docs/guides/timestamp-default-value#sqlite
 export const timestamps = {
-  createdAt: text('created_at').notNull().default(sql`(current_timestamp)`),
-  updatedAt: text('updated_at'),
+  createdAt: text('created_at')
+    .notNull()
+    .default(sql`(current_timestamp)`),
+
+  updatedAt: text('updated_at')
+    .notNull()
+    .$onUpdate(() => sql`(current_timestamp)`),
+
   deletedAt: text('deleted_at'),
 
   // Using epoch for timestamps. Needs to be converted to milliseconds
