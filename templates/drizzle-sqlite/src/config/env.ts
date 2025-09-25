@@ -44,9 +44,15 @@ const EnvSchema = z.object({
     z.array(z.url()).default([]),
   ),
 
-  PRODUCTION_LOG_FILE: z.string().default('production.log'),
-  TEST_LOG_FILE: z.string().default('test.log'),
-  SQLITE_DB_PATH: z.string().optional(),
+  PRODUCTION_LOG_FILE: z.preprocess(
+    emptyToUndefined,
+    z.string().default('production.log'),
+  ),
+
+  TEST_LOG_FILE: z.preprocess(
+    emptyToUndefined,
+    z.string().default('test.log'),
+  ),
 })
 
 export type Env = z.infer<typeof EnvSchema>

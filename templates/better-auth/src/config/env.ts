@@ -37,8 +37,16 @@ const EnvSchema = z.object({
     z.array(z.url()).default([]),
   ),
 
-  PRODUCTION_LOG_FILE: z.string().default('production.log'),
-  TEST_LOG_FILE: z.string().default('test.log'),
+  PRODUCTION_LOG_FILE: z.preprocess(
+    emptyToUndefined,
+    z.string().default('production.log'),
+  ),
+
+  TEST_LOG_FILE: z.preprocess(
+    emptyToUndefined,
+    z.string().default('test.log'),
+  ),
+
   SQLITE_DB_PATH: z.string().optional(),
 
   AUTH_SECRET: z.preprocess(

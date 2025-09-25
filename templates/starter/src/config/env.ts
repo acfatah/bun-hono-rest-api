@@ -1,6 +1,9 @@
 import process from 'node:process'
 import { z } from 'zod'
 
+// Helper: treat empty strings as undefined so that Zod .default() values apply
+const emptyToUndefined = (v: unknown) => (v === '' ? undefined : v)
+
 const EnvSchema = z.object({
   LOG_LEVEL: z.preprocess(
     (v) => {
@@ -34,8 +37,15 @@ const EnvSchema = z.object({
     z.array(z.url()).default([]),
   ),
 
-  PRODUCTION_LOG_FILE: z.string().default('production.log'),
-  TEST_LOG_FILE: z.string().default('test.log'),
+  PRODUCTION_LOG_FILE: z.preprocess(
+    emptyToUndefined,
+    z.string().default('production.log'),
+  ),
+
+  TEST_LOG_FILE: z.preprocess(
+    emptyToUndefined,
+    z.string().default('test.log'),
+  ),
 })
 
 export type Env = z.infer<typeof EnvSchema>
