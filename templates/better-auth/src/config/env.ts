@@ -1,6 +1,9 @@
 import process from 'node:process'
 import { z } from 'zod'
 
+// Helper: treat empty strings as undefined so that Zod .default() values apply
+const emptyToUndefined = (v: unknown) => (v === '' ? undefined : v)
+
 const EnvSchema = z.object({
   LOG_LEVEL: z.preprocess(
     (v) => {
@@ -21,8 +24,8 @@ const EnvSchema = z.object({
   ),
 
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
-  BASE_URL: z.url(),
   PORT: z.coerce.number().optional(),
+  BASE_URL: z.url(),
 
   TRUSTED_ORIGINS: z.preprocess(
     (v) => {
@@ -39,12 +42,12 @@ const EnvSchema = z.object({
   SQLITE_DB_PATH: z.string().optional(),
 
   AUTH_SECRET: z.preprocess(
-    v => (typeof v === 'string' && v.trim() === '' ? undefined : v),
+    emptyToUndefined,
     z.string().min(1).optional(),
   ),
 
   BETTER_AUTH_SECRET: z.preprocess(
-    v => (typeof v === 'string' && v.trim() === '' ? undefined : v),
+    emptyToUndefined,
     z.string().min(1).optional(),
   ),
 }).superRefine((input, ctx) => {

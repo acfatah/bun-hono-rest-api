@@ -5,11 +5,29 @@ import { z } from 'zod'
 const emptyToUndefined = (v: unknown) => (v === '' ? undefined : v)
 
 const EnvSchema = z.object({
-  LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).default('info'),
+  LOG_LEVEL: z.preprocess(
+    (v) => {
+      if (typeof v !== 'string')
+        return v
+
+      const t = v.trim()
+
+      if (t === '')
+        return undefined
+
+      return t.toLowerCase()
+    },
+    z
+      .enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent'])
+      .optional()
+      .default('info'),
+  ),
+
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
-  BASE_URL: z.url(),
   PORT: z.coerce.number().optional(),
+
   APP_SECRET: z.string().min(32),
+  BASE_URL: z.url(),
   SESSION_COOKIE_NAME: z.preprocess(emptyToUndefined, z.string().default('__s')),
   SESSION_TTL: z.preprocess(
     emptyToUndefined,

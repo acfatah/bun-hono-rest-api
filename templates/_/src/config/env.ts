@@ -2,10 +2,27 @@ import process from 'node:process'
 import { z } from 'zod'
 
 const EnvSchema = z.object({
-  LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).default('info'),
+  LOG_LEVEL: z.preprocess(
+    (v) => {
+      if (typeof v !== 'string')
+        return v
+
+      const t = v.trim()
+
+      if (t === '')
+        return undefined
+
+      return t.toLowerCase()
+    },
+    z
+      .enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent'])
+      .optional()
+      .default('info'),
+  ),
+
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
-  BASE_URL: z.url(),
   PORT: z.coerce.number().optional(),
+  BASE_URL: z.url(),
 
   TRUSTED_ORIGINS: z.preprocess(
     (v) => {
