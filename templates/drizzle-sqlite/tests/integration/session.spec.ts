@@ -18,9 +18,8 @@ const app: Hono = createApp()
 describe('session middleware', () => {
   app.get('/protected', session(), (ctx: Context) => {
     // iron-session instance attached in middleware as ctx.req.session
-    // @ts-expect-error augmented
-    const iron = ctx.req.session
-    const user = iron?.session?.user
+    const session = ctx.req.session
+    const user = session?.user
     if (!user) {
       return ctx.json({ error: 'Unauthorized' }, 401)
     }

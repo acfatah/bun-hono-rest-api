@@ -20,7 +20,7 @@ import { env } from '@/config/env'
 export function session() {
   return createMiddleware(async (ctx, next) => {
     const tempRes = new Response()
-    const iron = await getIronSession<SessionData>(
+    const session = await getIronSession<SessionData>(
       ctx.req.raw,
       tempRes,
       {
@@ -30,10 +30,10 @@ export function session() {
     )
 
     // Expose the whole iron session on request for test usage / downstream handlers
-    // @ts-expect-error augmenting request for convenience
-    ctx.req.session = iron
+    ctx.req.session = session
 
-    if (!iron?.session?.user) {
+    const unauthorize = async () => {
+      session.destroy()
       const unauthorized = ctx.json({ error: 'Unauthorized' }, 401)
       const setCookie = tempRes.headers.get('set-cookie')
       if (setCookie)
@@ -42,22 +42,23 @@ export function session() {
       return unauthorized
     }
 
+    // No session or no user means not authenticated
+    if (!session?.user)
+      return unauthorize()
+
+    // Session expired
+    if (Date.now() > session.expiresAt)
+      return unauthorize()
+
+    // Invalidation key mismatch means existing session is no longer valid
     if (
       env.SESSION_INVALIDATION_KEY
-      && iron.session.invalidationKey !== env.SESSION_INVALIDATION_KEY
+      && session.invalidationKey !== env.SESSION_INVALIDATION_KEY
     ) {
-      iron.session = null
-      await iron.save()
-
-      const unauthorized = ctx.json({ error: 'Unauthorized' }, 401)
-      const setCookie = tempRes.headers.get('set-cookie')
-      if (setCookie)
-        unauthorized.headers.set('Set-Cookie', setCookie)
-
-      return unauthorized
+      return unauthorize()
     }
 
-    ctx.set('session', iron)
+    ctx.set('session', session)
 
     const setCookie = tempRes.headers.get('set-cookie')
     if (setCookie)
