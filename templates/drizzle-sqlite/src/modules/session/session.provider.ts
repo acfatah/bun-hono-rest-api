@@ -12,6 +12,7 @@ export async function build(rawReq: Request) {
   const session = await getIronSession<SessionData>(rawReq, response, {
     password: env.APP_SECRET,
     cookieName: env.SESSION_COOKIE_NAME,
+    ttl: env.SESSION_TTL,
   })
 
   return { session, response }
@@ -37,10 +38,6 @@ export function validate(ctx: Context, session: IronSession<SessionData>) {
 
   // No session or no user means not authenticated
   if (!session?.user)
-    return { valid: false, unauthorizedResponse: unauthorize() }
-
-  // Session expired
-  if (Date.now() > session.expiresAt)
     return { valid: false, unauthorizedResponse: unauthorize() }
 
   // Invalidation key mismatch means existing session is no longer valid
