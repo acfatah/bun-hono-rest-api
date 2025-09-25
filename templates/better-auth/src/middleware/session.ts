@@ -14,7 +14,11 @@ export function session() {
     }
 
     ctx.set('user', session.user)
-    ctx.set('session', session.session)
+    ctx.set('session', {
+      ...session.session,
+      ipAddress: session.session.ipAddress ?? null,
+      userAgent: session.session.userAgent ?? null,
+    })
 
     return next()
   })
