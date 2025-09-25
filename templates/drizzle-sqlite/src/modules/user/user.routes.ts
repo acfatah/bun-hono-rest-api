@@ -1,4 +1,4 @@
-import { and, eq } from 'drizzle-orm'
+import { eq } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { getIronSession } from 'iron-session'
 import type { SessionData } from '@/types'
@@ -22,13 +22,13 @@ userRoutes.post('/login', async (ctx) => {
 
   const { username, password } = await ctx.req.json()
   const user = await db.query.user.findFirst({
-    where: and(
-      eq(userSchema.username, username),
-      eq(userSchema.password, password),
-    ),
+    where: eq(userSchema.username, username),
   })
 
-  if (!user) {
+  // TODO: Implement proper password hashing!
+  const valid = user && user.password === password
+
+  if (!valid) {
     const unauthorized = ctx.json({ message: 'Invalid credentials' }, 401)
     // Forward any Set-Cookie headers (e.g. for cleared session) if present
     const setCookie = tempRes.headers.get('set-cookie')
