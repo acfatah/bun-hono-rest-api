@@ -1,7 +1,5 @@
 import { createMiddleware } from 'hono/factory'
-import { getIronSession } from 'iron-session'
-import type { SessionData } from '@/types'
-import { env } from '@/config/env'
+import { build, validate } from '@/modules/session/session.provider'
 
 /**
  * Middleware factory that validates an Iron session and exposes it to downstream handlers.
@@ -19,48 +17,18 @@ import { env } from '@/config/env'
  */
 export function session() {
   return createMiddleware(async (ctx, next) => {
-    const tempRes = new Response()
-    const session = await getIronSession<SessionData>(
-      ctx.req.raw,
-      tempRes,
-      {
-        password: env.APP_SECRET,
-        cookieName: env.SESSION_COOKIE_NAME,
-      },
-    )
+    const { session, response } = await build(ctx.req.raw)
+    const { valid, unauthorizedResponse } = validate(ctx, session)
+
+    if (!valid)
+      return unauthorizedResponse
 
     // Expose the whole iron session on request for test usage / downstream handlers
     ctx.req.session = session
 
-    const unauthorize = async () => {
-      session.destroy()
-      const unauthorized = ctx.json({ error: 'Unauthorized' }, 401)
-      const setCookie = tempRes.headers.get('set-cookie')
-      if (setCookie)
-        unauthorized.headers.set('Set-Cookie', setCookie)
-
-      return unauthorized
-    }
-
-    // No session or no user means not authenticated
-    if (!session?.user)
-      return unauthorize()
-
-    // Session expired
-    if (Date.now() > session.expiresAt)
-      return unauthorize()
-
-    // Invalidation key mismatch means existing session is no longer valid
-    if (
-      env.SESSION_INVALIDATION_KEY
-      && session.invalidationKey !== env.SESSION_INVALIDATION_KEY
-    ) {
-      return unauthorize()
-    }
-
     ctx.set('session', session)
 
-    const setCookie = tempRes.headers.get('set-cookie')
+    const setCookie = response.headers.get('set-cookie')
     if (setCookie)
       ctx.header('Set-Cookie', setCookie)
 
