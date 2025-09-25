@@ -6,5 +6,6 @@ export interface SessionData {
 
     createdAt: number
     expiresAt: number
+    invalidationKey?: string
   } | null
 }

@@ -1,13 +1,22 @@
+/* eslint-disable import/first */
+// Ensure required env vars exist BEFORE importing any module that loads the validated env
+process.env.APP_SECRET ||= 'testsecret_testsecret_testsecret_123456'
+process.env.BASE_URL ||= 'http://localhost:3000'
+process.env.SESSION_COOKIE_NAME ||= '__test_s'
+;(Bun.env as any).APP_SECRET ??= process.env.APP_SECRET
+;(Bun.env as any).BASE_URL ??= process.env.BASE_URL
+;(Bun.env as any).SESSION_COOKIE_NAME ??= process.env.SESSION_COOKIE_NAME
+
+import type { Context, Hono } from 'hono'
 import { describe, expect, it } from 'bun:test'
 import '../bootstrap'
-
-import { createApp } from '@/'
+import { createApp } from '@/index'
 import { session } from '@/middleware/session'
 
-describe('session middleware', () => {
-  const app = createApp()
+const app: Hono = createApp()
 
-  app.get('/protected', session(), (ctx) => {
+describe('session middleware', () => {
+  app.get('/protected', session(), (ctx: Context) => {
     // iron-session instance attached in middleware as ctx.req.session
     // @ts-expect-error augmented
     const iron = ctx.req.session
@@ -78,6 +87,64 @@ describe('session middleware', () => {
       expect(await res.json()).toEqual({
         message: 'You have accessed a protected route',
       })
+    })
+  })
+
+  describe('session invalidation key behavior', () => {
+    it('should invalidate (401) when SESSION_INVALIDATION_KEY changes after login', async () => {
+      // Ensure a key is present before login
+      // Importing here to avoid potential hoisting issues; using dynamic import pattern
+      const { env } = await import('@/config/env')
+
+      env.SESSION_INVALIDATION_KEY = 'initial-key'
+
+      const loginRes = await app.request('/user/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: 'testuser',
+          password: 'testpassword',
+        }),
+      })
+      expect(loginRes.status).toBe(200)
+      const cookie = loginRes.headers.get('Set-Cookie')
+      expect(cookie).toBeTruthy()
+
+      // Change the invalidation key to force mismatch with stored session
+      env.SESSION_INVALIDATION_KEY = 'rotated-key'
+
+      const protectedRes = await app.request('/protected', {
+        headers: {
+          Cookie: cookie!,
+        },
+      })
+
+      expect(protectedRes.status).toBe(401)
+      expect(await protectedRes.json()).toEqual({ error: 'Unauthorized' })
+    })
+
+    it('should continue to allow session when invalidation key is unset (no mismatch logic)', async () => {
+      const { env } = await import('@/config/env')
+
+      // Remove invalidation key entirely
+      delete env.SESSION_INVALIDATION_KEY
+
+      const loginRes = await app.request('/user/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: 'testuser', password: 'testpassword' }),
+      })
+      expect(loginRes.status).toBe(200)
+      const cookie = loginRes.headers.get('Set-Cookie')
+      expect(cookie).toBeTruthy()
+
+      const protectedRes = await app.request('/protected', {
+        headers: { Cookie: cookie! },
+      })
+      expect(protectedRes.status).toBe(200)
+      expect(await protectedRes.json()).toEqual({ message: 'You have accessed a protected route' })
     })
   })
 })

@@ -11,7 +11,7 @@ export const userRoutes = new Hono()
 userRoutes.post('/login', async (ctx) => {
   // Use the underlying Fetch API Request (ctx.req.raw) and a temporary Response to allow iron-session
   const tempRes = new Response()
-  const session = await getIronSession<SessionData>(
+  const iron = await getIronSession<SessionData>(
     ctx.req.raw,
     tempRes,
     {
@@ -38,18 +38,21 @@ userRoutes.post('/login', async (ctx) => {
     return unauthorized
   }
 
-  if (!session.session) {
-    session.session = {
+  if (!iron.session) {
+    iron.session = {
       user,
       createdAt: Date.now(),
       expiresAt: Date.now() + env.SESSION_TTL,
     }
   }
   else {
-    session.session.user = user
+    iron.session.user = user
   }
 
-  await session.save()
+  if (env.SESSION_INVALIDATION_KEY)
+    iron.session.invalidationKey = env.SESSION_INVALIDATION_KEY
+
+  await iron.save()
 
   const response = ctx.json({ message: 'Login successful' })
   const setCookie = tempRes.headers.get('set-cookie')

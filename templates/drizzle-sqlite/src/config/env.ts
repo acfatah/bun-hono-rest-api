@@ -34,6 +34,9 @@ const EnvSchema = z.object({
     z.coerce.number().positive().default(60 * 60 * 24 * 7), // 7 days in seconds
   ),
 
+  // Optional key to invalidate all existing sessions when changed
+  SESSION_INVALIDATION_KEY: z.string().optional(),
+
   TRUSTED_ORIGINS: z.preprocess(
     (v) => {
       if (typeof v !== 'string')

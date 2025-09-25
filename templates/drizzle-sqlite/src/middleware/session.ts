@@ -42,6 +42,21 @@ export function session() {
       return unauthorized
     }
 
+    if (
+      env.SESSION_INVALIDATION_KEY
+      && iron.session.invalidationKey !== env.SESSION_INVALIDATION_KEY
+    ) {
+      iron.session = null
+      await iron.save()
+
+      const unauthorized = ctx.json({ error: 'Unauthorized' }, 401)
+      const setCookie = tempRes.headers.get('set-cookie')
+      if (setCookie)
+        unauthorized.headers.set('Set-Cookie', setCookie)
+
+      return unauthorized
+    }
+
     ctx.set('session', iron)
 
     const setCookie = tempRes.headers.get('set-cookie')

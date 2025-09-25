@@ -7,7 +7,12 @@ import process from 'node:process'
 import { db } from '@/db'
 import { user as userSchema } from '@/db/schema'
 
+// Provide required env vars for the configuration schema so tests can run in isolation
+// Only assign if not already set to allow overriding externally
 process.env.NODE_ENV = 'test'
+process.env.APP_SECRET ||= 'testsecret_testsecret_testsecret_123456'
+process.env.BASE_URL ||= 'http://localhost:3000'
+process.env.SESSION_COOKIE_NAME ||= '__test_s'
 
 /**
  * Ensures a test user exists in the database for use during tests.
