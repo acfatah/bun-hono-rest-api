@@ -6,9 +6,9 @@ import env from '@/config/env'
 import { db } from '@/db'
 import { user as userSchema } from '@/db/schema'
 
-export const userRoutes = new Hono()
+export const sessionRoutes = new Hono()
 
-userRoutes.post('/login', async (ctx) => {
+sessionRoutes.post('/login', async (ctx) => {
   // Use the underlying Fetch API Request (ctx.req.raw) and a temporary Response to allow iron-session
   const tempRes = new Response()
   const session = await getIronSession<SessionData>(
