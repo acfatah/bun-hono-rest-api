@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm'
 import { db } from '@/db'
 import * as schema from '@/db/schema'
-import { auth } from '@/modules/auth/auth.provider'
+import { auth } from '@/modules/auth/auth.service'
 
 export async function signUpUser({
   email = 'user@example.com',

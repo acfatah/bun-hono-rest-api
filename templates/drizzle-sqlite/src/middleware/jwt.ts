@@ -1,5 +1,5 @@
 import { createMiddleware } from 'hono/factory'
-import { verifyToken } from '@/modules/jwt/jwt.provider'
+import { verifyToken } from '@/modules/jwt/jwt.service'
 
 interface JwtMiddlewareOptions {
   required?: boolean

@@ -1,5 +1,5 @@
 import { createMiddleware } from 'hono/factory'
-import { auth } from '@/modules/auth/auth.provider'
+import { auth } from '@/modules/auth/auth.service'
 
 export function session() {
   return createMiddleware(async (ctx, next) => {

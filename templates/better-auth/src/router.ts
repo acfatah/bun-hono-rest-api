@@ -4,7 +4,7 @@ import { healthRoutes } from '@/modules/health/health.routes'
 import { uploadRoutes } from '@/modules/upload/upload.routes'
 
 import { session } from '@/middleware/session'
-import { auth } from '@/modules/auth/auth.provider'
+import { auth } from '@/modules/auth/auth.service'
 
 export function useRoutes(app: Hono) {
   app.route('/health', healthRoutes)

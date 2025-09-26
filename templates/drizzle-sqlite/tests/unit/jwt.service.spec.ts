@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test'
 import '../bootstrap'
-import { generateToken, signToken, verifyToken } from '@/modules/jwt/jwt.provider'
+import { generateToken, signToken, verifyToken } from '@/modules/jwt/jwt.service'
 
 // Helper: small sleep to ensure iat differences if needed
 const sleep = (ms: number) => new Promise(r => setTimeout(r, ms))

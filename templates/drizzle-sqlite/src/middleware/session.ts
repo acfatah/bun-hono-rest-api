@@ -1,5 +1,5 @@
 import { createMiddleware } from 'hono/factory'
-import { build, validate } from '@/modules/session/session.provider'
+import { build, validate } from '@/modules/session/session.service'
 
 /**
  * Middleware factory that validates an Iron session and exposes it to downstream handlers.
