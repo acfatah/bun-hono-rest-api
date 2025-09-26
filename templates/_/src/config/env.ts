@@ -1,6 +1,12 @@
 import process from 'node:process'
 import { z } from 'zod'
 
+const DEFAULT_NODE_ENV = 'development'
+const DEFAULT_PORT = 3000
+const DEFAULT_LOG_LEVEL = 'info'
+const DEFAULT_PRODUCTION_LOG_FILE = 'production.log'
+const DEFAULT_TEST_LOG_FILE = 'test.log'
+
 // Helper: treat empty strings as undefined so that Zod .default() values apply
 const emptyToUndefined = (v: unknown) => (v === '' ? undefined : v)
 
@@ -20,11 +26,11 @@ const EnvSchema = z.object({
     z
       .enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent'])
       .optional()
-      .default('info'),
+      .default(DEFAULT_LOG_LEVEL),
   ),
 
-  NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
-  PORT: z.coerce.number().optional(),
+  NODE_ENV: z.enum(['development', 'test', 'production']).default(DEFAULT_NODE_ENV),
+  PORT: z.preprocess(emptyToUndefined, z.coerce.number().default(DEFAULT_PORT)),
   BASE_URL: z.url(),
 
   TRUSTED_ORIGINS: z.preprocess(
@@ -39,12 +45,12 @@ const EnvSchema = z.object({
 
   PRODUCTION_LOG_FILE: z.preprocess(
     emptyToUndefined,
-    z.string().default('production.log'),
+    z.string().default(DEFAULT_PRODUCTION_LOG_FILE),
   ),
 
   TEST_LOG_FILE: z.preprocess(
     emptyToUndefined,
-    z.string().default('test.log'),
+    z.string().default(DEFAULT_TEST_LOG_FILE),
   ),
 })
 
