@@ -16,6 +16,7 @@
 
 ## Testing & Verification
 
+- Do not merge Bun.env and process.env
 - Start with specific tests near changed code, then broaden.
 - Don’t fix unrelated broken tests.
 
