@@ -50,5 +50,7 @@ lerna-debug.log*
 package-lock.json
 **/*.bun
 
-# we dont keep template's lock file
+# files that are part of templates but we dont want to keep them in the repo
 templates/*/bun.lock
+templates/**/drizzle/**
+templates/**/*.sqlite*
