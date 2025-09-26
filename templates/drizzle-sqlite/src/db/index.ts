@@ -11,7 +11,6 @@ import * as schema from '@/db/schema'
 import { resolveSqlitePath } from '../../drizzle.config'
 
 const filename = resolveSqlitePath()
-
 const client = new Database(filename)
 
 export const db = drizzle<typeof schema>({
