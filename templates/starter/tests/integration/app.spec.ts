@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'bun:test'
-import app from '@/index'
+import { createApp } from '@/app'
 
 describe('app', () => {
   describe('the GET /health', () => {
     it('should return a 200 status and a JSON response', async () => {
+      const app = createApp()
       const res = await app.request('/health')
 
       expect(res.status).toBe(200)

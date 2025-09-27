@@ -10,7 +10,7 @@ process.env.SESSION_COOKIE_NAME ||= '__test_s'
 import type { Context, Hono } from 'hono'
 import { describe, expect, it } from 'bun:test'
 import '../bootstrap'
-import { createApp } from '@/index'
+import { createApp } from '@/app'
 import { session } from '@/middleware/session'
 
 const app: Hono = createApp()
