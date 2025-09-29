@@ -8,9 +8,24 @@ const DEFAULT_PRODUCTION_LOG_FILE = 'production.log'
 const DEFAULT_TEST_LOG_FILE = 'test.log'
 const DEFAULT_SESSION_COOKIE_NAME = '__s'
 const DEFAULT_SESSION_TTL = 60 * 60 * 24 * 7 // 7 days in seconds
+const DEFAULT_SMTP_PORT = 587
 
 // Helper: treat empty strings as undefined so that Zod .default() values apply
 const emptyToUndefined = (v: unknown) => (v === '' ? undefined : v)
+
+// Helper: convert string boolean values to actual booleans
+function stringToBoolean(v: unknown) {
+  if (typeof v !== 'string')
+    return v
+
+  const val = v.trim().toLowerCase()
+  if (val === 'true' || val === '1')
+    return true
+  if (val === 'false' || val === '0' || val === '')
+    return false
+
+  return v
+}
 
 const EnvSchema = z.object({
   LOG_LEVEL: z.preprocess(
@@ -64,6 +79,49 @@ const EnvSchema = z.object({
     emptyToUndefined,
     z.string().default(DEFAULT_TEST_LOG_FILE),
   ),
+
+  ENABLE_SMTP_MAILER: z.preprocess(
+    stringToBoolean,
+    z.boolean().default(false),
+  ),
+
+  // SMTP settings (optional when ENABLE_SMTP_MAILER=false)
+  SMTP_HOST: z.string().min(1, 'SMTP_HOST required').optional(),
+  SMTP_PORT: z.preprocess(
+    emptyToUndefined,
+    z.coerce.number().int().positive().default(DEFAULT_SMTP_PORT),
+  ).optional(),
+  SMTP_SECURE: z.preprocess(
+    stringToBoolean,
+    z.boolean().default(false),
+  ).optional(),
+  SMTP_USER: z.string().min(1, 'SMTP_USER required').optional(),
+  SMTP_PASS: z.string().min(1, 'SMTP_PASS required').optional(),
+  SMTP_FROM: z.string().email('SMTP_FROM must be a valid email').optional(),
+}).superRefine((input, ctx) => {
+  if (input.ENABLE_SMTP_MAILER) {
+    const missing: string[] = []
+    if (!input.SMTP_HOST)
+      missing.push('SMTP_HOST')
+
+    if (!input.SMTP_USER)
+      missing.push('SMTP_USER')
+
+    if (!input.SMTP_PASS)
+      missing.push('SMTP_PASS')
+
+    if (!input.SMTP_FROM)
+      missing.push('SMTP_FROM')
+
+    // SMTP_PORT & SMTP_SECURE have defaults; host/user/pass/from must exist when enabled
+    if (missing.length) {
+      ctx.addIssue({
+        code: 'custom',
+        message: `Missing required SMTP vars: ${missing.join(', ')}`,
+        path: ['ENABLE_SMTP_MAILER'],
+      })
+    }
+  }
 })
 
 export type Env = z.infer<typeof EnvSchema>
