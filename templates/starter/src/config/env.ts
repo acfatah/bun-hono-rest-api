@@ -1,6 +1,11 @@
 import process from 'node:process'
 import { z } from 'zod'
 
+/**
+ * Bun environment variables validation and parsing using Zod.
+ * Read more at https://bun.com/docs/runtime/env.
+ */
+
 const DEFAULT_NODE_ENV = 'development'
 const DEFAULT_PORT = 3000
 const DEFAULT_LOG_LEVEL = 'info'
