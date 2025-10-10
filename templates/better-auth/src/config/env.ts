@@ -11,7 +11,6 @@ const DEFAULT_PORT = 3000
 const DEFAULT_LOG_LEVEL = 'info'
 const DEFAULT_PRODUCTION_LOG_FILE = 'production.log'
 const DEFAULT_TEST_LOG_FILE = 'test.log'
-const DEFAULT_SQLITE_DB_PATH = ':memory:'
 const DEFAULT_SMTP_PORT = 587
 
 // Helper: treat empty strings as undefined so that Zod .default() values apply
@@ -76,11 +75,6 @@ const EnvSchema = z.object({
   TEST_LOG_FILE: z.preprocess(
     emptyToUndefined,
     z.string().default(DEFAULT_TEST_LOG_FILE),
-  ),
-
-  SQLITE_DB_PATH: z.preprocess(
-    emptyToUndefined,
-    z.string().default(DEFAULT_SQLITE_DB_PATH),
   ),
 
   AUTH_SECRET: z.preprocess(
