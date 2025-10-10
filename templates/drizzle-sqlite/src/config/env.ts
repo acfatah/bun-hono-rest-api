@@ -51,7 +51,11 @@ const EnvSchema = z.object({
       .default(DEFAULT_LOG_LEVEL),
   ),
 
-  NODE_ENV: z.enum(['development', 'test', 'production']).default(DEFAULT_NODE_ENV),
+  NODE_ENV: z.preprocess(
+    emptyToUndefined,
+    z.enum(['development', 'test', 'production', 'staging']).default(DEFAULT_NODE_ENV),
+  ),
+
   PORT: z.preprocess(emptyToUndefined, z.coerce.number().default(DEFAULT_PORT)),
 
   APP_SECRET: z.string().min(32),
