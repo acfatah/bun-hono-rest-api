@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+  <head>
+    <title>File Upload Form Example</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style type="text/css">
+      body {
+        margin: 40px auto;
+        max-width: 650px;
+        padding: 0 10px;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      input {
+        width: 100%;
+      }
+      h1 {
+        font-size: clamp(1.75rem, 1.2rem + 1.5vw, 2.25rem);
+        line-height: 1.2;
+        margin: 0.5rem 0 1rem;
+      }
+      h2 {
+        font-size: clamp(1.375rem, 1.05rem + 0.8vw, 1.75rem);
+        line-height: 1.25;
+        margin: 0.5rem 0 0.75rem;
+      }
+      h3 {
+        font-size: clamp(1.125rem, 0.95rem + 0.5vw, 1.375rem);
+        line-height: 1.3;
+        margin: 0.5rem 0;
+      }
+      form {
+        gap: 0.75rem;
+      }
+      button {
+        margin-right: 0;
+        margin-left: auto;
+        width: fit-content;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="font-xl">File Upload Form Example</h1>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+      <label for="fileUpload">Choose an file to upload</label>
+      <input type="file" id="file" name="file" class="file-input" required />
+      <button type="submit" class="btn">Upload File</button>
+    </form>
+  </body>
+</html>

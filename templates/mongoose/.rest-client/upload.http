@@ -1,0 +1,12 @@
+@base_url=http://localhost:3000
+
+###
+POST {{base_url}}/upload
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="bun-logo.svg"
+Content-Type: image/jpg
+
+< ../public/bun-logo.svg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
