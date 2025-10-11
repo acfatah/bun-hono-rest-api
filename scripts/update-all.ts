@@ -4,6 +4,7 @@
  * Script to update all TARGET_DIRS.
  */
 
+import type { Dirent } from 'node:fs'
 import Bun from 'bun'
 import process from 'node:process'
 import { join } from 'pathe'
@@ -16,7 +17,7 @@ const useLatest = argv.includes('--latest')
 /**
  * Update dependencies in the given directory.
  */
-async function updateDeps(target) {
+async function updateDeps(target: string | Dirent) {
   const path = typeof target === 'string' ? target : join(target.parentPath, target.name)
   const versionFile = join(path, '.bun-version')
   const pathName = path === '.' ? 'root' : `"${path}"`
@@ -92,4 +93,4 @@ async function main() {
   console.log('All updates completed.')
 }
 
-main()
+void main()
