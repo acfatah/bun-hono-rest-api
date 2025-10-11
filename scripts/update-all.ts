@@ -1,23 +1,22 @@
 #!/usr/bin/env bun
 
 /**
- * Script to update all Bun templates in the 'templates' directory.
+ * Script to update all TARGET_DIRS.
  */
 
-import type { Dirent } from 'node:fs'
 import Bun from 'bun'
 import process from 'node:process'
 import { join } from 'pathe'
 import { readDir } from './utils'
 
-const TARGET_DIR = 'templates'
-const argv = Array.isArray((Bun as any)?.argv) ? (Bun as any).argv.slice(2) : process.argv.slice(2)
+const TARGET_DIRS = ['templates']
+const argv = Array.isArray(Bun?.argv) ? Bun.argv.slice(2) : process.argv.slice(2)
 const useLatest = argv.includes('--latest')
 
 /**
  * Update dependencies in the given directory.
  */
-async function updateDeps(target: string | Dirent): Promise<void> {
+async function updateDeps(target) {
   const path = typeof target === 'string' ? target : join(target.parentPath, target.name)
   const versionFile = join(path, '.bun-version')
   const pathName = path === '.' ? 'root' : `"${path}"`
@@ -28,7 +27,7 @@ async function updateDeps(target: string | Dirent): Promise<void> {
   // Update packages
   console.log(`Updating "${pathName}"`)
 
-  const args = ['bun', 'update'] as string[]
+  const args = ['bun', 'update']
   if (useLatest)
     args.push('--latest')
 
@@ -71,20 +70,22 @@ async function main() {
   await Bun.$`bun --version > .bun-version`
   await updateDeps('.')
 
-  const dir = await readDir(TARGET_DIR, {
-    withFileTypes: true,
-  }) as Dirent[]
+  for (const targetDir of TARGET_DIRS) {
+    const dir = await readDir(targetDir, {
+      withFileTypes: true,
+    })
 
-  // Run sequentially to avoid backpressure and resource spikes
-  for (const dirent of dir) {
-    if (!dirent.isDirectory())
-      continue
+    // Run sequentially to avoid backpressure and resource spikes per template set
+    for (const dirent of dir) {
+      if (!dirent.isDirectory())
+        continue
 
-    try {
-      await updateDeps(dirent)
-    }
-    catch (error) {
-      console.error(`An error occurred during the update of "${join(dirent.parentPath, dirent.name)}":`, error)
+      try {
+        await updateDeps(dirent)
+      }
+      catch (error) {
+        console.error(`An error occurred during the update of "${join(dirent.parentPath, dirent.name)}":`, error)
+      }
     }
   }
 
