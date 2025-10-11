@@ -26,12 +26,11 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false,
-
-    // https://www.typescriptlang.org/tsconfig/#esModuleInterop
-    "esModuleInterop": true,
   },
 
   "include": [
+    "./eslint.config.ts",
+    "./scripts/**/*",
     "./templates/*/src/**/*",
     "./templates/*/tests/**/*"
   ]
