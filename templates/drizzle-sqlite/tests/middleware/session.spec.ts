@@ -3,15 +3,23 @@
 process.env.APP_SECRET ||= 'testsecret_testsecret_testsecret_123456'
 process.env.BASE_URL ||= 'http://localhost:3000'
 process.env.SESSION_COOKIE_NAME ||= '__test_s'
-;(Bun.env as any).APP_SECRET ??= process.env.APP_SECRET
-;(Bun.env as any).BASE_URL ??= process.env.BASE_URL
-;(Bun.env as any).SESSION_COOKIE_NAME ??= process.env.SESSION_COOKIE_NAME
+
+interface TestEnv {
+  APP_SECRET?: string
+  BASE_URL?: string
+  SESSION_COOKIE_NAME?: string
+}
+
+const env = Bun.env as unknown as TestEnv
+env.APP_SECRET ??= process.env.APP_SECRET
+env.BASE_URL ??= process.env.BASE_URL
+env.SESSION_COOKIE_NAME ??= process.env.SESSION_COOKIE_NAME
 
 import type { Context, Hono } from 'hono'
 import { describe, expect, it } from 'bun:test'
 import '../bootstrap'
 import { createApp } from '@/app'
-import { session } from '@/middleware/session'
+import { session } from '@/modules/session/session.middleware'
 
 const app: Hono = createApp()
 

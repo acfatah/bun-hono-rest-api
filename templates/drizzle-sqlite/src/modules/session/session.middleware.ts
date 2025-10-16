@@ -29,7 +29,7 @@ export function session() {
     ctx.set('session', session)
 
     const setCookie = response.headers.get('set-cookie')
-    if (setCookie)
+    if (setCookie !== null && setCookie !== '')
       ctx.header('Set-Cookie', setCookie)
 
     return next()
