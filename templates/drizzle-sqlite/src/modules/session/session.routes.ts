@@ -17,6 +17,7 @@ sessionRoutes.post('/login', async (ctx) => {
     {
       password: env.APP_SECRET,
       cookieName: env.SESSION_COOKIE_NAME,
+      ttl: env.SESSION_TTL,
     },
   )
 
@@ -38,26 +39,97 @@ sessionRoutes.post('/login', async (ctx) => {
     return unauthorized
   }
 
-  if (!session) {
-    Object.assign(session, {
-      user,
-      createdAt: Date.now(),
-      expiresAt: Date.now() + env.SESSION_TTL,
-    })
-  }
-  else {
-    session.user = user
-  }
+  const { password: _, ...userWithoutPassword } = user!
+  const now = Math.floor(Date.now() / 1000)
+  session.user = userWithoutPassword
+
+  if (!session.createdAt)
+    session.createdAt = now
+
+  if (!session.expiresAt)
+    session.expiresAt = now + env.SESSION_TTL
 
   if (env.SESSION_INVALIDATION_KEY)
     session.invalidationKey = env.SESSION_INVALIDATION_KEY
 
   await session.save()
 
-  const response = ctx.json({ message: 'Login successful' })
+  const response = ctx.json({
+    message: 'Login successful',
+    data: { user: userWithoutPassword },
+  })
+
   const setCookie = tempRes.headers.get('set-cookie')
   if (setCookie)
     response.headers.set('Set-Cookie', setCookie)
+
+  return response
+})
+
+sessionRoutes.get('/session', async (ctx) => {
+  const now = Math.floor(Date.now() / 1000)
+  const tempRes = new Response()
+  const session = await getIronSession<SessionData>(
+    ctx.req.raw,
+    tempRes,
+    {
+      password: env.APP_SECRET,
+      cookieName: env.SESSION_COOKIE_NAME,
+    },
+  )
+
+  if (
+    !session
+    || !session.user
+    || (env.SESSION_INVALIDATION_KEY && session.invalidationKey !== env.SESSION_INVALIDATION_KEY)
+    || (env.SESSION_TTL && now > session.expiresAt)
+  ) {
+    const unauthorized = ctx.json({ message: 'No active session' }, 401)
+    // We should forward any existing Set-Cookie headers (e.g. for cleared session) if present
+    const setCookie = tempRes.headers.get('set-cookie')
+    if (setCookie)
+      unauthorized.headers.set('Set-Cookie', setCookie)
+
+    return unauthorized
+  }
+
+  // Extend the expiry by adding the TTL each time this route is visited
+  if (env.SESSION_TTL) {
+    session.expiresAt = now + env.SESSION_TTL
+    await session.save()
+  }
+
+  const response = ctx.json({
+    message: 'Session active',
+    data: {
+      user: session.user,
+      createdAt: session.createdAt,
+      expiresAt: session.expiresAt,
+    },
+  })
+
+  const setCookie = tempRes.headers.get('set-cookie')
+  if (setCookie)
+    response.headers.set('Set-Cookie', setCookie)
+
+  return response
+})
+
+sessionRoutes.post('/logout', async (ctx) => {
+  const response = new Response(null, { status: 204 })
+
+  const session = await getIronSession<SessionData>(
+    ctx.req.raw,
+    response,
+    {
+      password: env.APP_SECRET,
+      cookieName: env.SESSION_COOKIE_NAME,
+    },
+  )
+
+  if (session) {
+    session.destroy()
+  }
 
   return response
 })

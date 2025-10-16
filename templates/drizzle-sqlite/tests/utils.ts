@@ -1,7 +1,10 @@
 import type { SQL } from 'drizzle-orm/sql'
+import cuid2 from '@paralleldrive/cuid2'
 import { SQLiteSyncDialect } from 'drizzle-orm/sqlite-core'
 
-export { createId as randomCuid } from '@paralleldrive/cuid2'
+export function getRandomCuid() {
+  return cuid2.createId()
+}
 
 /** Method to inspect a query */
 export function queryToString(query: SQL<unknown>) {

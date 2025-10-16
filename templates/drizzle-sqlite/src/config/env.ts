@@ -60,7 +60,13 @@ const EnvSchema = z.object({
 
   APP_SECRET: z.string().min(32),
   BASE_URL: z.url(),
-  SESSION_COOKIE_NAME: z.preprocess(emptyToUndefined, z.string().default(DEFAULT_SESSION_COOKIE_NAME)),
+
+  SESSION_COOKIE_NAME: z.preprocess(
+    emptyToUndefined,
+    z.string().default(DEFAULT_SESSION_COOKIE_NAME),
+  ),
+
+  /** It is recommended to set a short-lived session for stateless cookie session */
   SESSION_TTL: z.preprocess(
     emptyToUndefined,
     z.coerce.number().positive().default(DEFAULT_SESSION_TTL),

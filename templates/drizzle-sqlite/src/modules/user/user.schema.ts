@@ -9,4 +9,5 @@ export const user = sqliteTable('users', {
   ...timestamps,
 })
 
-export type User = typeof user.$inferSelect
+export type UserSelect = typeof user.$inferSelect
+export type UserInsert = typeof user.$inferInsert

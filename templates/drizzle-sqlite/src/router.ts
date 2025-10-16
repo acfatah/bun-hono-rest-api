@@ -7,7 +7,9 @@ import { uploadRoutes } from '@/modules/upload/upload.routes'
 export function useRoutes(app: Hono) {
   app.route('/health', healthRoutes)
   app.route('/upload', uploadRoutes)
-  app.route('/*', sessionRoutes)
+
+  // Auth/session endpoints
+  app.route('/auth', sessionRoutes)
 
   // Home route
   app.get('/', ctx => ctx.json({

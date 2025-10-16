@@ -5,34 +5,16 @@
 import { and, eq } from 'drizzle-orm'
 import process from 'node:process'
 import { db } from '@/db'
+import { migrate } from '@/db/migrator'
 import { user as userSchema } from '@/db/schema'
 
-// Provide required env vars for the configuration schema so tests can run in isolation
-// Only assign if not already set to allow overriding externally
+// Provide required env vars for the configuration schema to run tests in isolation
 process.env.NODE_ENV = 'test'
 process.env.APP_SECRET ||= 'testsecret_testsecret_testsecret_123456'
 process.env.BASE_URL ||= 'http://localhost:3000'
 process.env.SESSION_COOKIE_NAME ||= '__test_s'
 
-/**
- * Ensures a test user exists in the database for use during tests.
- *
- * This asynchronous helper checks whether a user with the username
- * "testuser" and password "testpassword" already exists. If no such user is
- * found, it inserts a new user record with those credentials. The operation
- * is idempotent: calling it multiple times will not create duplicate users.
- *
- * Side effects:
- * - May insert a new user record into the database when missing.
- * - Logs any errors to the console; errors are caught and not re-thrown.
- *
- * Notes:
- * - Relies on external `db` and `userSchema` bindings from the surrounding scope.
- *
- * @async
- * @returns Promise<void> Resolves when the existence check and optional insert complete.
- */
-async function ensureTestUser() {
+async function ensureTestUserExists() {
   try {
     const existing = await db.query.user.findFirst({
       where: and(
@@ -40,6 +22,7 @@ async function ensureTestUser() {
         eq(userSchema.password, 'testpassword'),
       ),
     })
+
     if (!existing) {
       db.insert(userSchema).values({
         username: 'testuser',
@@ -51,6 +34,8 @@ async function ensureTestUser() {
     console.error('Failed to seed test user', e)
   }
 }
-(async () => {
-  await ensureTestUser()
+
+void (async () => {
+  migrate()
+  await ensureTestUserExists()
 })()

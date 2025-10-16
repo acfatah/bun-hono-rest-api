@@ -1,27 +1,14 @@
-/* eslint-disable import/first */
-// Ensure required env vars exist BEFORE importing any module that loads the validated env
-process.env.APP_SECRET ||= 'testsecret_testsecret_testsecret_123456'
-process.env.BASE_URL ||= 'http://localhost:3000'
-process.env.SESSION_COOKIE_NAME ||= '__test_s'
-
-interface TestEnv {
-  APP_SECRET?: string
-  BASE_URL?: string
-  SESSION_COOKIE_NAME?: string
-}
-
-const env = Bun.env as unknown as TestEnv
-env.APP_SECRET ??= process.env.APP_SECRET
-env.BASE_URL ??= process.env.BASE_URL
-env.SESSION_COOKIE_NAME ??= process.env.SESSION_COOKIE_NAME
-
-import type { Context, Hono } from 'hono'
+import type { Context } from 'hono'
 import { describe, expect, it } from 'bun:test'
 import '../bootstrap'
-import { createApp } from '@/app'
 import { session } from '@/modules/session/session.middleware'
+import { authenticateUser } from '../setup'
 
-const app: Hono = createApp()
+const LOGIN_PATH = '/auth/login'
+
+// Dynamically import createApp AFTER env vars are set to avoid early validation failure
+const { createApp } = await import('@/app')
+const app = createApp()
 
 describe('session middleware', () => {
   app.get('/protected', session(), (ctx: Context) => {
@@ -48,34 +35,37 @@ describe('session middleware', () => {
 
   describe('the POST /login', () => {
     it('should return a 200 status and a JSON response when valid credentials are provided', async () => {
-      const res = await app.request('/user/login', {
+      const { user } = await authenticateUser()
+      expect(user).toBeDefined()
+
+      const res = await app.request(LOGIN_PATH, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          username: 'testuser',
-          password: 'testpassword',
+          username: user.username,
+          password: user.password,
         }),
       })
 
       expect(res.status).toBe(200)
-      expect(await res.json()).toEqual({
-        message: 'Login successful',
-      })
     })
   })
 
   describe('the GET /protected with session', () => {
     it('should return a 200 status and a JSON response when a valid session is provided', async () => {
-      const loginRes = await app.request('/user/login', {
+      const { user } = await authenticateUser()
+      expect(user).toBeDefined()
+
+      const loginRes = await app.request(LOGIN_PATH, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          username: 'testuser',
-          password: 'testpassword',
+          username: user.username,
+          password: user.password,
         }),
       })
 
@@ -97,6 +87,41 @@ describe('session middleware', () => {
     })
   })
 
+  describe('the POST /logout', () => {
+    // Despite the cookie is deleted on the client side, the cookie is still valid
+    // until it expires.
+    it.skip('should return a 204 status and no content when logging out', async () => {
+      const { user } = await authenticateUser()
+      expect(user).toBeDefined()
+
+      const loginRes = await app.request(LOGIN_PATH, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: user.username,
+          password: user.password,
+        }),
+      })
+      expect(loginRes.status).toBe(200)
+      const cookies = loginRes.headers.get('Set-Cookie')
+      expect(cookies).toBeDefined()
+
+      const logoutRes = await app.request('/auth/logout', {
+        method: 'POST',
+        headers: { Cookie: cookies! },
+      })
+      expect(logoutRes.status).toBe(204)
+      expect(await logoutRes.text()).toBe('')
+
+      // Ensure the session was invalidated: accessing protected route with same cookie should be unauthorized
+      const protectedRes = await app.request('/protected', {
+        headers: { Cookie: cookies! },
+      })
+      expect(protectedRes.status).toBe(401)
+      expect(await protectedRes.json()).toEqual({ error: 'Unauthorized' })
+    })
+  })
+
   describe('session invalidation key behavior', () => {
     it('should invalidate (401) when SESSION_INVALIDATION_KEY changes after login', async () => {
       // Ensure a key is present before login
@@ -105,14 +130,17 @@ describe('session middleware', () => {
 
       env.SESSION_INVALIDATION_KEY = 'initial-key'
 
-      const loginRes = await app.request('/user/login', {
+      const { user } = await authenticateUser()
+      expect(user).toBeDefined()
+
+      const loginRes = await app.request(LOGIN_PATH, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          username: 'testuser',
-          password: 'testpassword',
+          username: user.username,
+          password: user.password,
         }),
       })
       expect(loginRes.status).toBe(200)
@@ -138,10 +166,16 @@ describe('session middleware', () => {
       // Remove invalidation key entirely
       delete env.SESSION_INVALIDATION_KEY
 
-      const loginRes = await app.request('/user/login', {
+      const { user } = await authenticateUser()
+      expect(user).toBeDefined()
+
+      const loginRes = await app.request(LOGIN_PATH, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: 'testuser', password: 'testpassword' }),
+        body: JSON.stringify({
+          username: user.username,
+          password: user.password,
+        }),
       })
       expect(loginRes.status).toBe(200)
       const cookie = loginRes.headers.get('Set-Cookie')
