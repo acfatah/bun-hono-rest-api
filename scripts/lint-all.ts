@@ -11,8 +11,13 @@ const LINT_SCRIPT = 'lint'
 const FORMAT_SCRIPT = 'format'
 
 const args = Bun.argv.slice(2)
-const fix = args.includes('--fix')
-const staged = args.includes('--staged')
+const applyFix = args.includes('--fix')
+const applyStaged = args.includes('--staged')
+const applyChanged = args.includes('--changed')
+
+if (applyStaged && applyChanged) {
+  console.warn('Both --staged and --changed options are provided. --staged will take precedence.')
+}
 
 /** Script names that can be used to lint an app. */
 type LintScript
@@ -20,6 +25,8 @@ type LintScript
     | typeof FORMAT_SCRIPT
     | `${typeof LINT_SCRIPT}:staged`
     | `${typeof FORMAT_SCRIPT}:staged`
+    | `${typeof LINT_SCRIPT}:changed`
+    | `${typeof FORMAT_SCRIPT}:changed`
 
 /**
  * Lints a single application directory by spawning a Bun process to run the specified lint script.
@@ -91,8 +98,9 @@ async function getScriptNameIfExists(appPath: string): Promise<LintScript | null
     if (!scripts || typeof scripts !== 'object')
       return null
 
-    const desired = ((fix ? FORMAT_SCRIPT : LINT_SCRIPT) + (staged ? ':staged' : '')) as LintScript
-    const scriptValue = scripts[desired]
+    const suffix = applyStaged ? ':staged' : (applyChanged ? ':changed' : '')
+    const scriptName = ((applyFix ? FORMAT_SCRIPT : LINT_SCRIPT) + suffix) as LintScript
+    const scriptValue = scripts[scriptName]
 
     if (
       scriptValue === undefined
@@ -102,7 +110,7 @@ async function getScriptNameIfExists(appPath: string): Promise<LintScript | null
       return null
     }
 
-    return desired
+    return scriptName
   }
   catch {
     return null
@@ -127,7 +135,7 @@ async function main() {
       const scriptName = await getScriptNameIfExists(appPath)
 
       if (!scriptName) {
-        console.log(`Skipping "${appPath}": no ${fix ? 'format' : 'lint'} script in package.json`)
+        console.log(`Skipping "${appPath}": no ${applyFix ? 'format' : 'lint'} script in package.json`)
         continue
       }
 
