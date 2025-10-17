@@ -38,6 +38,7 @@
   },
 
   "include": [
+    "eslint.config.ts",
     "./src/**/*.ts",
     "tests/**/*.ts"
   ]
