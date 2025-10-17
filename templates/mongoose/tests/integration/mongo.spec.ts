@@ -2,7 +2,7 @@ import { describe, expect, it } from 'bun:test'
 import { connect, getDB } from '@/db'
 import '../bootstrap'
 
-describe('db', () => {
+describe('mongo', () => {
   it('should connect and return a Db instance', async () => {
     const db = await connect()
     expect(db).toBeDefined()
