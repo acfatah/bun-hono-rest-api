@@ -1,6 +1,6 @@
 import type { Context, Hono } from 'hono'
 import { sql } from 'drizzle-orm'
-import type { UserSelect } from '@/db/schema'
+import type { UserRecord } from '@/db/schema'
 import { env } from '@/config/env'
 import { db } from '@/db'
 import * as schema from '@/db/schema'
@@ -9,7 +9,7 @@ import { getRandomCuid, getRandomReadableString } from '@/utils'
 
 const LOGIN_ENDPOINT = '/api/auth/login'
 
-export async function createUser(): Promise<UserSelect> {
+export async function createUser(): Promise<UserRecord> {
   const user = await db
     .insert(schema.user)
     .values({
@@ -41,11 +41,11 @@ export async function authenticateUser() {
   const { session, setCookie } = await loadSession(mockCtx)
 
   // Persist the user into the session so middleware can expose it
-  session.user = user as Omit<UserSelect, 'password'>
+  session.user = user as Omit<UserRecord, 'password'>
   await session.save()
 
   // Convert set-cookie response header into Cookie request header format
-  session.user = user as Omit<UserSelect, 'password'>
+  session.user = user as Omit<UserRecord, 'password'>
   await session.save()
 
   return {

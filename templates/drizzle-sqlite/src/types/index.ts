@@ -1,7 +1,7 @@
-import type { UserSelect } from '@/db/schema'
+import type { UserRecord } from '@/db/schema'
 
 export interface SessionData {
-  user: Omit<UserSelect, 'password'> | null
+  user: Omit<UserRecord, 'password'> | null
 
   ipAddress: string | null
   createdAt: number
