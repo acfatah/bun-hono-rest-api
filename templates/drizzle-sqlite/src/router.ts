@@ -9,7 +9,7 @@ export function useRoutes(app: Hono) {
   app.route('/upload', uploadRoutes)
 
   // Auth/session endpoints
-  app.route('/auth', sessionRoutes)
+  app.route('/api/auth', sessionRoutes)
 
   // Home route
   app.get('/', ctx => ctx.json({

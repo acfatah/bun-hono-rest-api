@@ -1,10 +1,12 @@
 import type { Context } from 'hono'
 import { describe, expect, it } from 'bun:test'
+import type { SessionData } from '@/types'
 import '../bootstrap'
 import { session } from '@/modules/session/session.middleware'
 import { authenticateUser } from '../setup'
 
-const LOGIN_PATH = '/auth/login'
+const LOGIN_ENDPOINT = '/api/auth/login'
+const SESSION_ENDPOINT = '/api/auth/session'
 
 // Dynamically import createApp AFTER env vars are set to avoid early validation failure
 const { createApp } = await import('@/app')
@@ -12,8 +14,7 @@ const app = createApp()
 
 describe('session middleware', () => {
   app.get('/protected', session(), (ctx: Context) => {
-    // iron-session instance attached in middleware as ctx.req.session
-    const session = ctx.req.session
+    const session = ctx.get('session') as SessionData | undefined
     const user = session?.user
     if (!user) {
       return ctx.json({ error: 'Unauthorized' }, 401)
@@ -33,12 +34,12 @@ describe('session middleware', () => {
     })
   })
 
-  describe('the POST /login', () => {
+  describe('the POST /api/auth/login', () => {
     it('should return a 200 status and a JSON response when valid credentials are provided', async () => {
       const { user } = await authenticateUser()
       expect(user).toBeDefined()
 
-      const res = await app.request(LOGIN_PATH, {
+      const res = await app.request(LOGIN_ENDPOINT, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -58,7 +59,7 @@ describe('session middleware', () => {
       const { user } = await authenticateUser()
       expect(user).toBeDefined()
 
-      const loginRes = await app.request(LOGIN_PATH, {
+      const loginRes = await app.request(LOGIN_ENDPOINT, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -70,7 +71,7 @@ describe('session middleware', () => {
       })
 
       expect(loginRes.status).toBe(200)
-      const cookies = loginRes.headers.get('Set-Cookie')
+      const cookies = loginRes.headers.get('set-cookie')
       expect(cookies).toBeDefined()
 
       // Now, access the protected route with the session cookie
@@ -87,14 +88,14 @@ describe('session middleware', () => {
     })
   })
 
-  describe('the POST /logout', () => {
+  describe('the POST /api/auth/logout', () => {
     // Despite the cookie is deleted on the client side, the cookie is still valid
     // until it expires.
     it.skip('should return a 204 status and no content when logging out', async () => {
       const { user } = await authenticateUser()
       expect(user).toBeDefined()
 
-      const loginRes = await app.request(LOGIN_PATH, {
+      const loginRes = await app.request(LOGIN_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -103,7 +104,7 @@ describe('session middleware', () => {
         }),
       })
       expect(loginRes.status).toBe(200)
-      const cookies = loginRes.headers.get('Set-Cookie')
+      const cookies = loginRes.headers.get('set-cookie')
       expect(cookies).toBeDefined()
 
       const logoutRes = await app.request('/auth/logout', {
@@ -133,7 +134,7 @@ describe('session middleware', () => {
       const { user } = await authenticateUser()
       expect(user).toBeDefined()
 
-      const loginRes = await app.request(LOGIN_PATH, {
+      const loginRes = await app.request(LOGIN_ENDPOINT, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -144,7 +145,7 @@ describe('session middleware', () => {
         }),
       })
       expect(loginRes.status).toBe(200)
-      const cookie = loginRes.headers.get('Set-Cookie')
+      const cookie = loginRes.headers.get('set-cookie')
       expect(cookie).toBeTruthy()
 
       // Change the invalidation key to force mismatch with stored session
@@ -169,7 +170,7 @@ describe('session middleware', () => {
       const { user } = await authenticateUser()
       expect(user).toBeDefined()
 
-      const loginRes = await app.request(LOGIN_PATH, {
+      const loginRes = await app.request(LOGIN_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -178,7 +179,7 @@ describe('session middleware', () => {
         }),
       })
       expect(loginRes.status).toBe(200)
-      const cookie = loginRes.headers.get('Set-Cookie')
+      const cookie = loginRes.headers.get('set-cookie')
       expect(cookie).toBeTruthy()
 
       const protectedRes = await app.request('/protected', {
@@ -186,6 +187,72 @@ describe('session middleware', () => {
       })
       expect(protectedRes.status).toBe(200)
       expect(await protectedRes.json()).toEqual({ message: 'You have accessed a protected route' })
+    })
+  })
+
+  describe('ip address guard on /api/auth/session', () => {
+    it('should allow session when Cloudflare cf-connecting-ip matches the one used at login', async () => {
+      const { user } = await authenticateUser()
+      expect(user).toBeDefined()
+
+      const loginRes = await app.request(LOGIN_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'cf-connecting-ip': '1.1.1.1',
+        },
+        body: JSON.stringify({
+          username: user.username,
+          password: user.password,
+        }),
+      })
+
+      expect(loginRes.status).toBe(200)
+      const cookie = loginRes.headers.get('set-cookie')
+      expect(cookie).toBeTruthy()
+
+      const sessionRes = await app.request(SESSION_ENDPOINT, {
+        headers: {
+          'Cookie': cookie!,
+          'cf-connecting-ip': '1.1.1.1',
+        },
+      })
+
+      expect(sessionRes.status).toBe(200)
+      const json = await sessionRes.json() as { message: string, data: { ipAddress: string } }
+      expect(json?.message).toBe('Session active')
+      expect(json?.data?.ipAddress).toBe('1.1.1.1')
+    })
+
+    it('should reject session when Cloudflare cf-connecting-ip differs from login ip', async () => {
+      const { user } = await authenticateUser()
+      expect(user).toBeDefined()
+
+      const loginRes = await app.request(LOGIN_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'cf-connecting-ip': '1.1.1.1',
+        },
+        body: JSON.stringify({
+          username: user.username,
+          password: user.password,
+        }),
+      })
+
+      expect(loginRes.status).toBe(200)
+      const cookie = loginRes.headers.get('set-cookie')
+      expect(cookie).toBeTruthy()
+
+      const sessionRes = await app.request(SESSION_ENDPOINT, {
+        headers: {
+          'Cookie': cookie!,
+          'cf-connecting-ip': '2.2.2.2',
+        },
+      })
+
+      expect(sessionRes.status).toBe(401)
+      expect(await sessionRes.json()).toEqual({ error: 'IP address changed' })
     })
   })
 })

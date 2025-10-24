@@ -1,5 +1,5 @@
 import { createMiddleware } from 'hono/factory'
-import { build, validate } from '@/modules/session/session.service'
+import { loadSession, validate } from '@/modules/session/session.service'
 
 /**
  * Middleware factory that validates an Iron session and exposes it to downstream handlers.
@@ -17,20 +17,14 @@ import { build, validate } from '@/modules/session/session.service'
  */
 export function session() {
   return createMiddleware(async (ctx, next) => {
-    const { session, response } = await build(ctx.req.raw)
-    const { valid, unauthorizedResponse } = validate(ctx, session)
+    const { session, setCookie } = await loadSession(ctx)
+    const { valid, unauthorizedResponse } = await validate(ctx, session)
 
     if (!valid)
       return unauthorizedResponse
 
-    // Expose the whole iron session on request for test usage / downstream handlers
-    ctx.req.session = session
-
     ctx.set('session', session)
-
-    const setCookie = response.headers.get('set-cookie')
-    if (setCookie !== null && setCookie !== '')
-      ctx.header('Set-Cookie', setCookie)
+    setCookie(ctx.res)
 
     return next()
   })

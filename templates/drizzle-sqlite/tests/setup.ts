@@ -1,12 +1,15 @@
-import type { Hono } from 'hono'
+import type { Context, Hono } from 'hono'
 import { sql } from 'drizzle-orm'
 import type { UserSelect } from '@/db/schema'
+import { env } from '@/config/env'
 import { db } from '@/db'
 import * as schema from '@/db/schema'
-import { build as buildSession } from '@/modules/session/session.service'
-import { getRandomCuid, getRandomReadableString } from './utils'
+import { loadSession } from '@/modules/session/session.service'
+import { getRandomCuid, getRandomReadableString } from '@/utils'
 
-export async function createUser(): Promise<typeof schema.user.$inferSelect> {
+const LOGIN_ENDPOINT = '/api/auth/login'
+
+export async function createUser(): Promise<UserSelect> {
   const user = await db
     .insert(schema.user)
     .values({
@@ -22,7 +25,7 @@ export async function createUser(): Promise<typeof schema.user.$inferSelect> {
 }
 
 export async function loginUser(app: Hono, user: { username: string, password: string }) {
-  return await app.request('/api/auth/login', {
+  return await app.request(LOGIN_ENDPOINT, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ username: user.username, password: user.password }),
@@ -33,26 +36,21 @@ export async function authenticateUser() {
   const user = await createUser()
 
   // Build a session using a dummy request (tests bypass actual HTTP handling)
-  const dummy = new Request('http://localhost/')
-  const iron = await buildSession(dummy)
+  const dummy = new Request(env.BASE_URL)
+  const mockCtx = { req: { raw: dummy } } as unknown as Context
+  const { session, setCookie } = await loadSession(mockCtx)
 
   // Persist the user into the session so middleware can expose it
-  iron.session.user = user as UserSelect
-  await iron.session.save()
-  const setCookie = iron.response.headers.get('Set-Cookie')
-  // Convert Set-Cookie response header into Cookie request header format
-  let cookieHeader: string | undefined
-  if (setCookie) {
-    // If multiple cookies are ever set, join just the name=value pairs
-    cookieHeader = setCookie
-      .split(/,(?=[^;]+?=)/) // split on commas that delimit cookies
-      .map((c: string) => c.split(';')[0])
-      .join('; ')
-  }
+  session.user = user as Omit<UserSelect, 'password'>
+  await session.save()
+
+  // Convert set-cookie response header into Cookie request header format
+  session.user = user as Omit<UserSelect, 'password'>
+  await session.save()
 
   return {
     user,
-    headers: cookieHeader ? { Cookie: cookieHeader } : {},
+    setCookie,
   }
 }
 
