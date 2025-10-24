@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { secureHeaders } from 'hono/secure-headers'
-import { handleOrigin } from '@/middleware/cors-utils'
+import { handleOrigin } from '@/lib/cors'
 import { logger } from '@/middleware/logger'
 import { useRoutes } from '@/router'
 
