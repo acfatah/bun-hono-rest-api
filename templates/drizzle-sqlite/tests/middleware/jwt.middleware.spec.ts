@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'bun:test'
 import '../bootstrap'
 import { Hono } from 'hono'
-import { jwt } from '@/middleware/jwt'
+import { jwt } from '@/modules/jwt/jwt.middleware'
 import { signToken } from '@/modules/jwt/jwt.service'
 
 function buildApp(required = true, passthroughOnError = false) {
